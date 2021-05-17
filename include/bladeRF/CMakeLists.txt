@@ -11,5 +11,5 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/bladeRF
+    source.h DESTINATION include/bladeRF
 )

@@ -1,5 +1,6 @@
 *~
 *.pyc
 *.pyo
+*.user
 build*/
 examples/grc/*.py
