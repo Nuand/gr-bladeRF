@@ -5,7 +5,27 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
+########################################################################
+# Rules for generating the source and sink yml wrappers
+########################################################################
+include(GrPython)
+
+macro(GEN_BLOCK_YAML _generator _yaml_block)
+    set(generator ${CMAKE_CURRENT_SOURCE_DIR}/${_generator})
+    set(yaml_block ${CMAKE_CURRENT_BINARY_DIR}/${_yaml_block})
+    list(APPEND yaml_blocks ${yaml_block})
+    add_custom_command(
+        DEPENDS ${generator} OUTPUT ${yaml_block}
+        COMMAND ${PYTHON_EXECUTABLE} ${generator} ${yaml_block}
+    )
+endmacro(GEN_BLOCK_YAML)
+
+GEN_BLOCK_YAML(gen_bladerf_blocks.py    bladeRF_source.block.yml)
+#GEN_BLOCK_YAML(gen_bladerg_blocks.py    bladeRF_sink.block.yml)
+
+add_custom_target(osmosdr_grc_yaml_blocks ALL DEPENDS ${yaml_blocks})
 
 install(FILES
+    ${yaml_blocks}
     DESTINATION share/gnuradio/grc/blocks
 )
