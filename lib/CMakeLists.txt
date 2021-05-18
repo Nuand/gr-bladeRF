@@ -10,8 +10,8 @@
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
-
 list(APPEND bladeRF_sources
+    source_impl.cc
     source_impl.cc
 )
 

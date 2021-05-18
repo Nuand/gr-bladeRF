@@ -27,8 +27,8 @@ include(GrPybind)
 ########################################################################
 # Python Bindings
 ########################################################################
-
 list(APPEND bladeRF_python_files
+    source_python.cc
     source_python.cc python_bindings.cc)
 
 GR_PYBIND_MAKE_OOT(bladeRF 
