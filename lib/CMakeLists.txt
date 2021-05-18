@@ -12,7 +12,6 @@
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND bladeRF_sources
     source_impl.cc
-    source_impl.cc
 )
 
 set(bladeRF_sources "${bladeRF_sources}" PARENT_SCOPE)
@@ -21,8 +20,17 @@ if(NOT bladeRF_sources)
     return()
 endif(NOT bladeRF_sources)
 
+MACRO (APPEND_LIB_LIST)
+    SET (gr_bladerf_libs "${gr_bladerf_libs};${ARGN}" CACHE INTERNAL "lib list")
+ENDMACRO(APPEND_LIB_LIST)
+
+set(gr_bladerf_libs "" CACHE INTERNAL "lib that accumulates link targets")
+
+APPEND_LIB_LIST(gnuradio::gnuradio-runtime)
+
 add_library(gnuradio-bladeRF SHARED ${bladeRF_sources})
-target_link_libraries(gnuradio-bladeRF gnuradio::gnuradio-runtime)
+target_link_libraries(gnuradio-bladeRF ${gr_bladerf_libs})
+
 target_include_directories(gnuradio-bladeRF
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
@@ -34,6 +42,9 @@ if(APPLE)
         INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
     )
 endif(APPLE)
+
+add_subdirectory(bladerf)
+
 
 ########################################################################
 # Install built library files
