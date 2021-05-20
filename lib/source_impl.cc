@@ -38,6 +38,11 @@ namespace gr {
     {
     }
 
+    size_t source_impl::get_num_channels() override
+    {
+
+    }
+
 
   } /* namespace bladeRF */
 } /* namespace gr */

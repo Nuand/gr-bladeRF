@@ -22,9 +22,7 @@
 #define INCLUDED_BLADERF_SOURCE_C_H
 
 #include <gnuradio/sync_block.h>
-#include "source_iface.h"
 #include "bladerf_common.h"
-
 #include "osmosdr/ranges.h"
 
 class bladerf_source_c;
@@ -53,7 +51,6 @@ bladerf_source_c_sptr make_bladerf_source_c(const std::string &args = "");
 
 class bladerf_source_c :
   public gr::sync_block,
-  public source_iface,
   protected bladerf_common
 {
 private:
