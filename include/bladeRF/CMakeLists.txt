@@ -11,5 +11,9 @@
 ########################################################################
 install(FILES
     api.h
-    source.h DESTINATION include/bladeRF
+    pimpl.h
+    ranges.h
+    time_spec.h
+    source.h
+    DESTINATION include/bladeRF
 )
