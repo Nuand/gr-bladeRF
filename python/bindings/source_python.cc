@@ -14,7 +14,7 @@
 /* BINDTOOL_GEN_AUTOMATIC(0)                                                       */
 /* BINDTOOL_USE_PYGCCXML(0)                                                        */
 /* BINDTOOL_HEADER_FILE(source.h)                                        */
-/* BINDTOOL_HEADER_FILE_HASH(e575bdb7d1f57bbe97df8f995c473b55)                     */
+/* BINDTOOL_HEADER_FILE_HASH(66db645c2a179be37e33d0fa63c60b38)                     */
 /***********************************************************************************/
 
 #include <pybind11/complex.h>
@@ -33,10 +33,11 @@ void bind_source(py::module& m)
     using source    = gr::bladeRF::source;
 
 
-    py::class_<source, gr::hier_block2,
+    py::class_<source,
         std::shared_ptr<source>>(m, "source", D(source))
 
         .def(py::init(&source::make),
+           py::arg("args"),
            D(source,make)
         )
         

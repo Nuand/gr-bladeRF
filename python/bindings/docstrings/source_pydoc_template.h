@@ -19,9 +19,6 @@
  static const char *__doc_gr_bladeRF_source = R"doc()doc";
 
 
- static const char *__doc_gr_bladeRF_source_source = R"doc()doc";
-
-
  static const char *__doc_gr_bladeRF_source_make = R"doc()doc";
 
   
