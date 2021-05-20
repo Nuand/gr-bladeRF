@@ -17,7 +17,46 @@ namespace gr {
     class source_impl : public source
     {
      private:
-      bladerf_source_c_sptr dev_;
+
+      template<typename T>
+      class channel_store
+      {
+          std::map<size_t, T> values_;
+       public:
+          template <typename pred>
+          T set_if_not_equal(T value, size_t n, size_t max_n, pred fn)
+          {
+              if( n < max_n)
+              {
+                  auto &val = values_[n];
+                  if(val != value)
+                  {
+                      val = fn();
+                  }
+                  return val;
+              }
+              return T{};
+          }
+          T & operator[](size_t n)
+          {
+              return values_[n];
+          }
+      };
+
+
+      bladerf_source_c_sptr device_;
+      double sample_rate_;
+
+      channel_store<double> center_freq_;
+      channel_store<double> freq_corr_;
+      channel_store<bool> gain_mode_;
+      channel_store<double> gain_;
+      channel_store<double> if_gain_;
+      channel_store<double> bb_gain_;
+      channel_store<std::string> antenna_;
+
+
+
 
      public:
       source_impl(const std::string & args);

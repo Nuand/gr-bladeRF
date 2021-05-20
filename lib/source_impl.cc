@@ -36,8 +36,8 @@ namespace gr {
             throw std::runtime_error("No supported devices found "
                                      "(check the connection and/or udev rules).");
 
-        dev_ = make_bladerf_source_c( dev_list[0] ); //todo: get by id from block args
-        for (size_t i = 0; i < dev_->get_num_channels(); i++) {
+        device_ = make_bladerf_source_c( dev_list[0] ); //todo: get by id from block args
+        for (size_t i = 0; i < device_->get_num_channels(); i++) {
   #ifdef HAVE_IQBALANCE
           gr::iqbalance::optimize_c::sptr iq_opt = gr::iqbalance::optimize_c::make( 0 );
           gr::iqbalance::fix_cc::sptr     iq_fix = gr::iqbalance::fix_cc::make();
@@ -51,22 +51,186 @@ namespace gr {
           _iq_opt.push_back( iq_opt.get() );
           _iq_fix.push_back( iq_fix.get() );
   #else
-          connect(dev_, i, self(), i);
+          connect(device_, i, self(), i);
   #endif
         }
      }
 
-    /*
-     * Our virtual destructor.
-     */
     source_impl::~source_impl()
     {
     }
 
     size_t source_impl::get_num_channels()
     {
+        return device_->get_num_channels();
+    }
+
+    osmosdr::meta_range_t source_impl::get_sample_rates()
+    {
+        return device_->get_sample_rates();
+    }
+
+    double source_impl::set_sample_rate(double rate)
+    {
+      double sample_rate = device_->set_sample_rate(rate);
+
+      #ifdef HAVE_IQBALANCE
+            size_t channel = 0;
+            for (size_t dev_chan = 0; dev_chan < dev_->get_num_channels(); dev_chan++) {
+              if ( channel < _iq_opt.size() ) {
+                gr::iqbalance::optimize_c *opt = _iq_opt[channel];
+
+                if ( opt->period() > 0 ) { /* optimize is enabled */
+                  opt->set_period( dev->get_sample_rate() / 5 );
+                  opt->reset();
+                }
+              }
+
+              channel++;
+            }
+      #endif
+          sample_rate_ = sample_rate;
+        return sample_rate_;
+    }
+
+    double source_impl::get_sample_rate()
+    {
+        return device_->get_sample_rate();
+    }
+
+    osmosdr::freq_range_t source_impl::get_freq_range(size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->get_freq_range( chan );
+        }
+        return osmosdr::freq_range_t();
+    }
+
+    double source_impl::set_center_freq(double freq, size_t chan)
+    {
+        return center_freq_.set_if_not_equal(freq,
+                                             chan,
+                                             get_num_channels(),
+                                             [this,freq,chan]{
+            return device_->set_center_freq(freq,chan);
+        });
+    }
+
+    double source_impl::get_center_freq(size_t chan)
+    {
+        return device_->get_center_freq(chan);
+    }
+
+    double source_impl::set_freq_corr(double ppm, size_t chan)
+    {
+        return freq_corr_.set_if_not_equal(ppm, chan,
+                                           get_num_channels(),
+                                           [this, ppm, chan]
+        {
+            return device_->set_freq_corr(ppm, chan);
+        });
+
+    }
+
+    double source_impl::get_freq_corr(size_t chan)
+    {
+        if(chan < get_num_channels())
+            return device_->get_center_freq(chan);
         return 0;
     }
+
+    std::vector<std::string> source_impl::get_gain_names(size_t chan)
+    {
+        if(chan < get_num_channels())
+            return device_->get_gain_names( chan );
+        return {};
+    }
+
+    osmosdr::gain_range_t source_impl::get_gain_range(size_t chan)
+    {
+        if(chan < get_num_channels())
+            return device_->get_gain_range( chan );
+        return {};
+    }
+
+    osmosdr::gain_range_t source_impl::get_gain_range(const std::string &name, size_t chan)
+    {
+        if(chan < get_num_channels())
+            return device_->get_gain_range( name, chan );
+        return {};
+    }
+
+    bool source_impl::set_gain_mode(bool automatic, size_t chan)
+    {
+        return gain_mode_.set_if_not_equal(automatic,chan,get_num_channels(),
+                                           [this, automatic, chan]
+        {
+            bool mode = device_->set_gain_mode(automatic,chan);
+            if(!automatic)
+                device_->set_gain(gain_[chan], chan);
+            return mode;
+        });
+    }
+
+    bool source_impl::get_gain_mode(size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->get_gain_mode(chan);
+        }
+        return false;
+    }
+
+    double source_impl::set_gain(double gain, size_t chan)
+    {
+        return gain_.set_if_not_equal(gain,chan, get_num_channels(),
+                                      [this,&gain,chan]
+        {
+            return device_->set_gain(gain,chan);
+        });
+    }
+
+    double source_impl::set_gain(double gain, const std::string & name, size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->set_gain(gain,name,chan);
+        }
+        return 0;
+    }
+
+    double source_impl::set_if_gain(double gain, size_t chan)
+    {
+        return 0;
+    }
+
+    double source_impl::set_bb_gain(double gain, size_t chan)
+    {
+        return 0;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   } /* namespace bladeRF */
