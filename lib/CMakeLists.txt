@@ -32,6 +32,8 @@ add_library(gnuradio-bladeRF SHARED ${bladeRF_sources})
 target_link_libraries(gnuradio-bladeRF ${gr_bladerf_libs})
 
 target_include_directories(gnuradio-bladeRF
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+    PUBLIC ${Boost_INCLUDE_DIRS}
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
   )

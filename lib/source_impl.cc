@@ -9,6 +9,8 @@
 #include "source_impl.h"
 #include "arg_helpers.h"
 
+
+
 namespace gr {
   namespace bladeRF {
 
@@ -25,11 +27,34 @@ namespace gr {
               gr::io_signature::make(0,0,0),
               args_to_io_signature(args))
     {
+        //in osmocom args for make source is strings,
+        //therefore all params is strings
+        //todo: change to vector<bladerf_devinfo>
 
-      //connect(self(), 0, d_firstblock, 0);
-      // connect other blocks
-      //connect(d_lastblock, 0, self(), 0);
-    }
+        auto dev_list = bladerf_source_c::get_devices();
+        if(dev_list.size() == 0)
+            throw std::runtime_error("No supported devices found "
+                                     "(check the connection and/or udev rules).");
+
+        dev_ = make_bladerf_source_c( dev_list[0] ); //todo: get by id from block args
+        for (size_t i = 0; i < dev_->get_num_channels(); i++) {
+  #ifdef HAVE_IQBALANCE
+          gr::iqbalance::optimize_c::sptr iq_opt = gr::iqbalance::optimize_c::make( 0 );
+          gr::iqbalance::fix_cc::sptr     iq_fix = gr::iqbalance::fix_cc::make();
+
+          connect(block, i, iq_fix, 0);
+          connect(iq_fix, 0, self(), channel++);
+
+          connect(block, i, iq_opt, 0);
+          msg_connect(iq_opt, "iqbal_corr", iq_fix, "iqbal_corr");
+
+          _iq_opt.push_back( iq_opt.get() );
+          _iq_fix.push_back( iq_fix.get() );
+  #else
+          connect(dev_, i, self(), i);
+  #endif
+        }
+     }
 
     /*
      * Our virtual destructor.
@@ -38,9 +63,9 @@ namespace gr {
     {
     }
 
-    size_t source_impl::get_num_channels() override
+    size_t source_impl::get_num_channels()
     {
-
+        return 0;
     }
 
 
