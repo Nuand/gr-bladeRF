@@ -54,6 +54,7 @@ namespace gr {
       channel_store<double> if_gain_;
       channel_store<double> bb_gain_;
       channel_store<std::string> antenna_;
+      channel_store<double> bandwidth_;
 
 
 
@@ -110,7 +111,7 @@ namespace gr {
       std::string set_antenna( const std::string & antenna,
                                        size_t chan = 0 ) override;
 
-      std::string get_antenna( size_t chan = 0 ) = 0;
+      std::string get_antenna( size_t chan = 0 ) override;
 
       enum DCOffsetMode {
         DCOffsetOff = 0,
@@ -137,35 +138,6 @@ namespace gr {
       double get_bandwidth( size_t chan = 0 ) override;
 
       osmosdr::freq_range_t get_bandwidth_range( size_t chan = 0 ) override;
-
-      void set_time_source(const std::string &source,
-                                   const size_t mboard = 0) override;
-
-      std::string get_time_source(const size_t mboard) override;
-
-      std::vector<std::string> get_time_sources(const size_t mboard) override;
-
-      void set_clock_source(const std::string &source,
-                                    const size_t mboard = 0) override;
-
-      std::string get_clock_source(const size_t mboard) override;
-
-      std::vector<std::string> get_clock_sources(const size_t mboard) override;
-
-      double get_clock_rate(size_t mboard = 0) override;
-
-      void set_clock_rate(double rate, size_t mboard = 0) override;
-
-      ::osmosdr::time_spec_t get_time_now(size_t mboard = 0) override;
-
-      ::osmosdr::time_spec_t get_time_last_pps(size_t mboard = 0) override;
-
-      void set_time_now(const ::osmosdr::time_spec_t &time_spec,
-                                size_t mboard = 0) override;
-
-      void set_time_next_pps(const ::osmosdr::time_spec_t &time_spec) override;
-
-      void set_time_unknown_pps(const ::osmosdr::time_spec_t &time_spec) override;
 
       // Where all the action really happens
    };

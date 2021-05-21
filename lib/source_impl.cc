@@ -210,29 +210,143 @@ namespace gr {
         return 0;
     }
 
+    std::vector<std::string> source_impl::get_antennas(size_t chan)
+    {
+        if (chan < get_num_channels())
+            return device_->get_antennas(chan);
+        return {};
+    }
 
+    std::string source_impl::set_antenna(const std::string &antenna, size_t chan)
+    {
+        return antenna_.set_if_not_equal(antenna,chan,get_num_channels(),
+                                         [this, antenna, chan]
+        {
+           return device_->set_antenna(antenna,chan);
+        });
+    }
 
+    std::string source_impl::get_antenna(size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->get_antenna(chan);
+        }
+        return {};
+    }
 
+    void source_impl::set_dc_offset_mode(int mode, size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->set_dc_offset_mode(mode,chan);
+        }
+    }
 
+    void source_impl::set_dc_offset(const std::complex<double> &offset, size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->set_dc_offset(offset,chan);
+        }
+    }
 
+    void source_impl::set_iq_balance_mode(int mode, size_t chan)
+    {
+      #ifdef HAVE_IQBALANCE
+        size_t channel = 0;
+        for (source_iface *dev : _devs) {
+          for (size_t dev_chan = 0; dev_chan < dev->get_num_channels(); dev_chan++) {
+            if ( chan == channel++ ) {
+              if ( chan < _iq_opt.size() && chan < _iq_fix.size() ) {
+                gr::iqbalance::optimize_c *opt = _iq_opt[chan];
+                gr::iqbalance::fix_cc *fix = _iq_fix[chan];
 
+                if ( IQBalanceOff == mode  ) {
+                  opt->set_period( 0 );
+                  /* store current values in order to be able to restore them later */
+                  _vals[ chan ] = std::pair< float, float >( fix->mag(), fix->phase() );
+                  fix->set_mag( 0.0f );
+                  fix->set_phase( 0.0f );
+                } else if ( IQBalanceManual == mode ) {
+                  if ( opt->period() == 0 ) { /* transition from Off to Manual */
+                    /* restore previous values */
+                    std::pair< float, float > val = _vals[ chan ];
+                    fix->set_mag( val.first );
+                    fix->set_phase( val.second );
+                  }
+                  opt->set_period( 0 );
+                } else if ( IQBalanceAutomatic == mode ) {
+                  opt->set_period( dev->get_sample_rate() / 5 );
+                  opt->reset();
+                }
+              }
+            }
+          }
+        }
+      #else
+        if(chan < get_num_channels())
+        {
+            return device_->set_iq_balance_mode( mode, chan );
+        }
+      #endif
+    }
 
+    void source_impl::set_iq_balance(const std::complex<double> &balance, size_t chan)
+    {
 
+        #ifdef HAVE_IQBALANCE
+          size_t channel = 0;
+          for (source_iface *dev : _devs) {
+            for (size_t dev_chan = 0; dev_chan < dev->get_num_channels(); dev_chan++) {
+              if ( chan == channel++ ) {
+                if ( chan < _iq_opt.size() && chan < _iq_fix.size() ) {
+                  gr::iqbalance::optimize_c *opt = _iq_opt[chan];
+                  gr::iqbalance::fix_cc *fix = _iq_fix[chan];
 
+                  if ( opt->period() == 0 ) { /* automatic optimization desabled */
+                    fix->set_mag( balance.real() );
+                    fix->set_phase( balance.imag() );
+                  }
+                }
+              }
+            }
+          }
+        #else
+        if(chan < get_num_channels())
+        {
+            return device_->set_iq_balance( balance, chan );
+        }
+#endif
+    }
 
+    double source_impl::set_bandwidth(double bandwidth, size_t chan)
+    {
+        return bandwidth_.set_if_not_equal(bandwidth, chan,
+                                           get_num_channels(),
+                                           [this, bandwidth, chan]
+        {
+            return device_->set_bandwidth(bandwidth,chan);
+        });
+    }
 
+    double source_impl::get_bandwidth(size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->get_bandwidth( chan );
+        }
+        return 0;
+    }
 
-
-
-
-
-
-
-
-
-
-
-
+    osmosdr::freq_range_t source_impl::get_bandwidth_range(size_t chan)
+    {
+        if(chan < get_num_channels())
+        {
+            return device_->get_bandwidth_range( chan );
+        }
+        return {};
+    }
   } /* namespace bladeRF */
 } /* namespace gr */
 
