@@ -10,6 +10,7 @@
 
 #include <bladeRF/source.h>
 #include "bladerf_source_c.h"
+#include "channel_store.h"
 
 namespace gr {
   namespace bladeRF {
@@ -17,33 +18,6 @@ namespace gr {
     class source_impl : public source
     {
      private:
-
-      template<typename T>
-      class channel_store
-      {
-          std::map<size_t, T> values_;
-       public:
-          template <typename pred>
-          T set_if_not_equal(T value, size_t n, size_t max_n, pred fn)
-          {
-              if( n < max_n)
-              {
-                  auto &val = values_[n];
-                  if(val != value)
-                  {
-                      val = fn();
-                  }
-                  return val;
-              }
-              return T{};
-          }
-          T & operator[](size_t n)
-          {
-              return values_[n];
-          }
-      };
-
-
       bladerf_source_c_sptr device_;
       double sample_rate_;
 
