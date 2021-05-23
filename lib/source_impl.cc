@@ -9,8 +9,6 @@
 #include "source_impl.h"
 #include "arg_helpers.h"
 
-
-
 namespace gr {
   namespace bladeRF {
 
@@ -62,12 +60,12 @@ namespace gr {
 
     size_t source_impl::get_num_channels()
     {
-        return device_->get_num_channels();
+        return device_ ? device_->get_num_channels() : 0;
     }
 
     osmosdr::meta_range_t source_impl::get_sample_rates()
     {
-        return device_->get_sample_rates();
+        return device_ ? device_->get_sample_rates() : osmosdr::meta_range_t{};
     }
 
     double source_impl::set_sample_rate(double rate)
@@ -95,7 +93,7 @@ namespace gr {
 
     double source_impl::get_sample_rate()
     {
-        return device_->get_sample_rate();
+        return device_ ? device_->get_sample_rate() : 0;
     }
 
     osmosdr::freq_range_t source_impl::get_freq_range(size_t chan)
@@ -119,7 +117,8 @@ namespace gr {
 
     double source_impl::get_center_freq(size_t chan)
     {
-        return device_->get_center_freq(chan);
+        return chan < get_num_channels() ?
+                    device_->get_center_freq(chan) : 0;
     }
 
     double source_impl::set_freq_corr(double ppm, size_t chan)
@@ -135,30 +134,26 @@ namespace gr {
 
     double source_impl::get_freq_corr(size_t chan)
     {
-        if(chan < get_num_channels())
-            return device_->get_center_freq(chan);
-        return 0;
+        return chan < get_num_channels() ?
+                    device_->get_center_freq(chan) : 0;
     }
 
     std::vector<std::string> source_impl::get_gain_names(size_t chan)
     {
-        if(chan < get_num_channels())
-            return device_->get_gain_names( chan );
-        return {};
+        return chan < get_num_channels() ?
+                    device_->get_gain_names( chan ) : std::vector<std::string>{};
     }
 
     osmosdr::gain_range_t source_impl::get_gain_range(size_t chan)
     {
-        if(chan < get_num_channels())
-            return device_->get_gain_range( chan );
-        return {};
+        return chan < get_num_channels() ?
+                    device_->get_gain_range( chan ) : osmosdr::gain_range_t{};
     }
 
     osmosdr::gain_range_t source_impl::get_gain_range(const std::string &name, size_t chan)
     {
-        if(chan < get_num_channels())
-            return device_->get_gain_range( name, chan );
-        return {};
+        return chan < get_num_channels() ?
+                    device_->get_gain_range( name, chan ) : osmosdr::gain_range_t{};
     }
 
     bool source_impl::set_gain_mode(bool automatic, size_t chan)
@@ -175,11 +170,8 @@ namespace gr {
 
     bool source_impl::get_gain_mode(size_t chan)
     {
-        if(chan < get_num_channels())
-        {
-            return device_->get_gain_mode(chan);
-        }
-        return false;
+        return chan < get_num_channels() &&
+                    device_->get_gain_mode(chan);
     }
 
     double source_impl::set_gain(double gain, size_t chan)
@@ -193,11 +185,8 @@ namespace gr {
 
     double source_impl::set_gain(double gain, const std::string & name, size_t chan)
     {
-        if(chan < get_num_channels())
-        {
-            return device_->set_gain(gain,name,chan);
-        }
-        return 0;
+        return chan < get_num_channels() ?
+                    device_->set_gain(gain,name,chan) : 0;
     }
 
     double source_impl::set_if_gain(double gain, size_t chan)
@@ -212,9 +201,8 @@ namespace gr {
 
     std::vector<std::string> source_impl::get_antennas(size_t chan)
     {
-        if (chan < get_num_channels())
-            return device_->get_antennas(chan);
-        return {};
+        return chan < get_num_channels() ?
+                    device_->get_antennas(chan) : std::vector<std::string>{};
     }
 
     std::string source_impl::set_antenna(const std::string &antenna, size_t chan)
@@ -228,18 +216,15 @@ namespace gr {
 
     std::string source_impl::get_antenna(size_t chan)
     {
-        if(chan < get_num_channels())
-        {
-            return device_->get_antenna(chan);
-        }
-        return {};
+        return chan < get_num_channels() ?
+                    device_->get_antenna(chan) : std::string{};
     }
 
     void source_impl::set_dc_offset_mode(int mode, size_t chan)
     {
         if(chan < get_num_channels())
         {
-            return device_->set_dc_offset_mode(mode,chan);
+            device_->set_dc_offset_mode(mode,chan);
         }
     }
 
@@ -247,7 +232,7 @@ namespace gr {
     {
         if(chan < get_num_channels())
         {
-            return device_->set_dc_offset(offset,chan);
+            device_->set_dc_offset(offset,chan);
         }
     }
 
@@ -332,20 +317,14 @@ namespace gr {
 
     double source_impl::get_bandwidth(size_t chan)
     {
-        if(chan < get_num_channels())
-        {
-            return device_->get_bandwidth( chan );
-        }
-        return 0;
+        return chan < get_num_channels() ?
+                    device_->get_bandwidth( chan ) : 0;
     }
 
     osmosdr::freq_range_t source_impl::get_bandwidth_range(size_t chan)
     {
-        if(chan < get_num_channels())
-        {
-            return device_->get_bandwidth_range( chan );
-        }
-        return {};
+        return chan < get_num_channels() ?
+            device_->get_bandwidth_range( chan ) : osmosdr::freq_range_t{};
     }
   } /* namespace bladeRF */
 } /* namespace gr */

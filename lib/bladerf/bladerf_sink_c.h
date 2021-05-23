@@ -22,7 +22,6 @@
 #define INCLUDED_BLADERF_SINK_C_H
 
 #include <gnuradio/sync_block.h>
-#include "sink_iface.h"
 #include "bladerf_common.h"
 
 #include "osmosdr/ranges.h"
@@ -53,7 +52,6 @@ bladerf_sink_c_sptr make_bladerf_sink_c(const std::string &args = "");
 
 class bladerf_sink_c :
   public gr::sync_block,
-  public sink_iface,
   protected bladerf_common
 {
 private:

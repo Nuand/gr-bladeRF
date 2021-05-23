@@ -12,6 +12,7 @@
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND bladeRF_sources
     source_impl.cc
+    sink_impl.cc
 )
 
 set(bladeRF_sources "${bladeRF_sources}" PARENT_SCOPE)

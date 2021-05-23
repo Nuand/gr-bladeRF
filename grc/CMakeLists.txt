@@ -21,11 +21,10 @@ macro(GEN_BLOCK_YAML _generator _yaml_block)
 endmacro(GEN_BLOCK_YAML)
 
 GEN_BLOCK_YAML(gen_bladerf_blocks.py    bladeRF_source.block.yml)
-#GEN_BLOCK_YAML(gen_bladerg_blocks.py    bladeRF_sink.block.yml)
+GEN_BLOCK_YAML(gen_bladerf_blocks.py    bladeRF_sink.block.yml)
 
 add_custom_target(bladeRF_grc_yaml_blocks ALL DEPENDS ${yaml_blocks})
 
 install(FILES
-    ${yaml_blocks}
-    DESTINATION share/gnuradio/grc/blocks
+    ${yaml_blocks} DESTINATION share/gnuradio/grc/blocks
 )

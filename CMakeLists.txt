@@ -75,6 +75,8 @@ ENDIF()
 ########################################################################
 include(FindPkgConfig)
 find_package(Gnuradio "3.9" REQUIRED)
+find_package(gnuradio-iqbalance PATHS ${Gnuradio_DIR})
+
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX

@@ -22,6 +22,7 @@ namespace py = pybind11;
 /**************************************/
 // BINDING_FUNCTION_PROTOTYPES(
     void bind_source(py::module& m);
+    void bind_sink(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -51,5 +52,6 @@ PYBIND11_MODULE(bladeRF_python, m)
     /**************************************/
     // BINDING_FUNCTION_CALLS(
     bind_source(m);
+    bind_sink(m);
     // ) END BINDING_FUNCTION_CALLS
 }

@@ -15,5 +15,5 @@ install(FILES
     ranges.h
     time_spec.h
     source.h
-    DESTINATION include/bladeRF
+    sink.h DESTINATION include/bladeRF
 )
