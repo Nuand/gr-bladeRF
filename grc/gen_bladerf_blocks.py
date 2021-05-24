@@ -33,17 +33,20 @@ parameters:
   option_attributes:
       type: [fc32]
   hide: part
+  
 - id: args
   label: 'Device Arguments'
   dtype: string
   default: '""'
   hide: ${'$'}{ 'none' if args else 'part'}
+  
 - id: sync
   label: Sync
   dtype: enum
   options: [sync, pc_clock, none]
   option_labels: [Unknown PPS, PC Clock, Don't Sync]
   hide: ${'$'}{ 'none' if sync else 'part'}
+  
 - id: num_mboards
   label: 'Number MBoards'
   dtype: int
@@ -64,15 +67,56 @@ parameters:
   option_labels: [Default, External, MIMO Cable, O/B GPSDO]
   hide: ${'$'}{ 'all' if not (num_mboards > ${m}) else ( 'none' if time_source${m} else 'part' )}  
 % endfor
+
 - id: nchan
   label: 'Number Channels'
   dtype: int
   default: 1
   options: [ ${", ".join([str(n) for n in range(1, max_nchan+1)])} ]
+  
 - id: sample_rate
   label: 'Sample Rate (sps)'
   dtype: real
   default: samp_rate
+  
+- id: fpga_image
+  label: 'FPGA image'
+  dtype: string
+  
+- id: bias_tee
+  label: 'Bias tee'
+  dtype: bool
+  default: False
+  
+- id: xb_200
+  label: 'XB-200'
+  dtype: enum
+  default: auto
+  options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  option_labels: [auto, auto3db, 50M, 144M, 222M, custom]
+  
+- id: power_monitoring
+  label: 'Enable power monitoring'
+  dtype: bool
+  default: False
+ 
+- id: ref_clk
+  label: 'Reference clock'
+  dtype: real
+  
+- id: in_clk
+  label: 'Input clock'
+  dtype: enum
+  default: auto
+  options: ['ONBOARD', 'EXTERNAL']
+  option_labels: ['ONBOARD', 'EXTERNAL']
+  
+- id: out_clk
+  label: 'Output clock'
+  dtype: bool
+  default: False
+
+
 ${params}
 
 inputs:
