@@ -116,6 +116,11 @@ parameters:
   dtype: bool
   default: False
 
+- id: dac
+  label: 'VCXTO DAC'
+  dtype: real
+  default: 10000
+
 
 ${params}
 
