@@ -35,39 +35,11 @@ parameters:
   hide: part
   
 - id: args
-  label: 'Device Arguments'
+  label: 'Device'
   dtype: string
   default: '""'
   hide: ${'$'}{ 'none' if args else 'part'}
   
-- id: sync
-  label: Sync
-  dtype: enum
-  options: [sync, pc_clock, none]
-  option_labels: [Unknown PPS, PC Clock, Don't Sync]
-  hide: ${'$'}{ 'none' if sync else 'part'}
-  
-- id: num_mboards
-  label: 'Number MBoards'
-  dtype: int
-  default: 1
-  options: [ ${", ".join([str(n) for n in range(1, max_mboards+1)])} ]
-  hide: part
-% for m in range(max_mboards):
-- id: clock_source${m}
-  label: 'MB${m}: Clock Source'
-  dtype: string
-  options: ['', internal, external, external_1pps, mimo, gpsdo]
-  option_labels: [Default, Internal, External, External 1PPS, MIMO Cable, O/B GPSDO]
-  hide: ${'$'}{ 'all' if not (num_mboards > ${m}) else ( 'none' if clock_source${m} else 'part' )}
-- id: time_source${m}
-  label: 'MB${m}: Time Source'
-  dtype: string
-  options: ['', external, mimo, gpsdo]
-  option_labels: [Default, External, MIMO Cable, O/B GPSDO]
-  hide: ${'$'}{ 'all' if not (num_mboards > ${m}) else ( 'none' if time_source${m} else 'part' )}  
-% endfor
-
 - id: nchan
   label: 'Number Channels'
   dtype: int
@@ -82,19 +54,7 @@ parameters:
 - id: fpga_image
   label: 'FPGA image'
   dtype: string
-  
-- id: bias_tee
-  label: 'Bias tee'
-  dtype: bool
-  default: False
-  
-- id: xb_200
-  label: 'XB-200'
-  dtype: enum
-  default: auto
-  options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
-  option_labels: [auto, auto3db, 50M, 144M, 222M, custom]
-  
+    
 - id: power_monitoring
   label: 'Enable power monitoring'
   dtype: bool
@@ -151,21 +111,6 @@ templates:
     bladerf.${sourk}(
         args="numchan=" + str(${'$'}{nchan}) + " " + ${'$'}{args}
     )
-    % for m in range(max_mboards):
-    ${'%'} if context.get('num_mboards')() > ${m}:
-    ${'%'} if context.get('clock_source${m}')():
-    self.${'$'}{id}.set_clock_source(${'$'}{${'clock_source' + str(m)}}, ${m})
-    ${'%'} endif
-    ${'%'} if context.get('time_source${m}')():
-    self.${'$'}{id}.set_time_source(${'$'}{${'time_source' + str(m)}}, ${m})
-    ${'%'} endif
-    ${'%'} endif
-    % endfor
-    ${'%'} if sync == 'sync':
-    self.${'$'}{id}.set_time_unknown_pps(osmosdr.time_spec_t())
-    ${'%'} elif sync == 'pc_clock':
-    self.${'$'}{id}.set_time_now(osmosdr.time_spec_t(time.time()), osmosdr.ALL_MBOARDS)
-    ${'%'} endif
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
     % for n in range(max_nchan):
     ${'%'} if context.get('nchan')() > ${n}:
@@ -179,7 +124,6 @@ templates:
     self.${'$'}{id}.set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     self.${'$'}{id}.set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
     self.${'$'}{id}.set_bb_gain(${'$'}{${'bb_gain' + str(n)}}, ${n})
-    self.${'$'}{id}.set_antenna(${'$'}{${'ant' + str(n)}}, ${n})
     self.${'$'}{id}.set_bandwidth(${'$'}{${'bw' + str(n)}}, ${n})
     ${'%'} endif
     % endfor
@@ -196,14 +140,33 @@ templates:
     - set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     - set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
     - set_bb_gain(${'$'}{${'bb_gain' + str(n)}}, ${n})
-    - set_antenna(${'$'}{${'ant' + str(n)}}, ${n})
     - set_bandwidth(${'$'}{${'bw' + str(n)}}, ${n})
     % endfor
 
 documentation: |-
   The bladeRF ${sourk} block:
-
-
+  
+  Device: 
+  Device serial id. If 'device' are not specified, the first available device is used.
+  
+  Fpga image:  
+  Load the FPGA bitstream from the specified file. This is required only once after powering the bladeRF on. If the FPGA is already loaded, this argument is ignored, unless 'fpga-reload=1' is specified.
+  
+  Enable power monitoring:
+  Read value from Power Monitor IC
+  
+  Reference clock:
+  Value of reference clock
+  
+  Input clock:
+  Onboard/external clock.
+  
+  Output clock:
+  Enable/disable clock output.
+  
+  VCXTO DAC:
+  Value to VCTCXO trim DAC  
+  
   Num Channels:
   Selects the total number of channels in this multi-device configuration. Required when specifying multiple device arguments.
 
@@ -231,8 +194,6 @@ documentation: |-
     Manual: Keep last estimated correction when switched from Automatic to Manual.
     Automatic: Periodicallly find the best solution to compensate for image signals.
 
-  This functionality depends on http://cgit.osmocom.org/cgit/gr-iqbal/
-
   Gain Mode:
   Chooses between the manual (default) and automatic gain mode where appropriate.
   To allow manual control of RF/IF/BB gain stages, manual gain mode must be configured.
@@ -250,10 +211,6 @@ documentation: |-
   Overall baseband gain of the device.
   This setting is available for HackRF in receive mode. Observations lead to a reasonable gain range from 15 to 30dB.
 
-  Antenna:
-  For devices with only one antenna, this may be left blank.
-  Otherwise, the user should specify one of the possible antenna choices.
-
   Bandwidth:
   Set the bandpass filter on the radio frontend. To use the default (automatic) bandwidth filter setting, this should be zero.
   
@@ -264,31 +221,51 @@ file_format: 1
 # <block>
 #   <check>$max_nchan >= \$nchan</check>
 #   <check>\$nchan > 0</check>
-#   <check>$max_mboards >= \$num_mboards</check>
-#   <check>\$num_mboards > 0</check>
-#   <check>\$nchan >= \$num_mboards</check>
 # </block>
 # """
 
 PARAMS_TMPL = """
 - id: freq${n}
-  label: 'Ch${n}: Frequency (Hz)'
+  label: 'Ch${n}: Center frequency (Hz)'
   dtype: real
-  default: 100e6
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  default: 1e8
+  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
+  
 - id: corr${n}
   label: 'Ch${n}: Frequency Correction (ppm)'
   dtype: real
   default: 0
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
+   
+- id: bw${n}
+  label: 'Ch${n}: Bandwidth (Hz)'
+  dtype: real
+  default: 200000
+  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
+  
+- id: bias_tee${n}
+  label: 'Ch${n}: Bias tee'
+  dtype: bool
+  default: False
+  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
+  
+- id: xb_200${n}
+  label: 'Ch${n}: XB-200'
+  dtype: enum
+  default: auto
+  options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  option_labels: [auto, auto3db, 50M, 144M, 222M, custom]
+  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
+
 % if sourk == 'source':
 - id: dc_offset_mode${n}
   label: 'Ch${n}: DC Offset Mode'
   dtype: int
   default: 0
-  options: [0, 1, 2]
+  options: [0, 1, 2]  
   option_labels: [Off, Manual, Automatic]
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  
 - id: iq_balance_mode${n}
   label: 'Ch${n}: IQ Balance Mode'
   dtype: int
@@ -296,6 +273,7 @@ PARAMS_TMPL = """
   options: [0, 1, 2]
   option_labels: [Off, Manual, Automatic]
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  
 - id: gain_mode${n}
   label: 'Ch${n}: Gain Mode'
   dtype: bool
@@ -304,31 +282,24 @@ PARAMS_TMPL = """
   option_labels: [Manual, Automatic]
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
 % endif
+
 - id: gain${n}
   label: 'Ch${n}: RF Gain (dB)'
   dtype: real
   default: 10
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  
 - id: if_gain${n}
   label: 'Ch${n}: IF Gain (dB)'
   dtype: real
   default: 20
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  
 - id: bb_gain${n}
   label: 'Ch${n}: BB Gain (dB)'
   dtype: real
   default: 20
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
-- id: ant${n}
-  label: 'Ch${n}: Antenna'
-  dtype: string
-  default: ""
-  hide: ${'$'}{'all' if not (nchan > ${n}) else ('none' if eval('ant' + str(${n})) else 'part')}
-- id: bw${n}
-  label: 'Ch${n}: Bandwidth (Hz)'
-  dtype: real
-  default: 0
-  hide: ${'$'}{'all' if not (nchan > ${n}) else ('none' if eval('bw' + str(${n})) else 'part')}
 """
 
 
@@ -342,8 +313,7 @@ def parse_tmpl(_tmpl, **kwargs):
     except:
         print(exceptions.text_error_template().render())
 
-MAX_NUM_MBOARDS = 8
-MAX_NUM_CHANNELS = MAX_NUM_MBOARDS * 4
+MAX_NUM_CHANNELS = 2
 
 import os.path
 
@@ -378,7 +348,6 @@ if __name__ == '__main__':
             parse_tmpl(
                 MAIN_TMPL,
                 max_nchan=MAX_NUM_CHANNELS,
-                max_mboards=MAX_NUM_MBOARDS,
                 params=params,
                 title=title,
                 prefix=prefix,
