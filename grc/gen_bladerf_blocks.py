@@ -105,7 +105,7 @@ outputs:
 
 templates:
   imports: |-
-     import bladerf
+     import bladeRF
      import time
   make: |
     bladerf.${sourk}(
