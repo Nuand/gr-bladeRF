@@ -189,6 +189,18 @@ namespace gr {
                     device_->set_gain(gain,name,chan) : 0;
     }
 
+    double source_impl::get_gain(size_t chan)
+    {
+        return chan < get_num_channels() ?
+                    device_->get_gain(chan) : 0;
+    }
+
+    double source_impl::get_gain(const std::string &name, size_t chan)
+    {
+        return chan < get_num_channels() ?
+                    device_->get_gain(name, chan) : 0;
+    }
+
     double source_impl::set_if_gain(double gain, size_t chan)
     {
         return 0;

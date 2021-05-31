@@ -72,7 +72,7 @@ namespace gr {
                                const std::string & name,
                                size_t chan = 0 ) override;
 
-      double get_gain( size_t chan = 0 )override;
+      double get_gain( size_t chan = 0 ) override;
 
       double get_gain( const std::string & name, size_t chan = 0 ) override;
 
