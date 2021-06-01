@@ -4,18 +4,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-
-########################################################################
-# Check if there is C++ code at all
-########################################################################
-if(NOT gr_bladerf_srcs)
-    MESSAGE(STATUS "No C++ sources... skipping python bindings")
-    return()
-endif(NOT gr_bladerf_srcs)
-
-########################################################################
-# Check for pygccxml
-########################################################################
 GR_PYTHON_CHECK_MODULE_RAW(
     "pygccxml"
     "import pygccxml"
@@ -29,8 +17,8 @@ include(GrPybind)
 ########################################################################
 list(APPEND bladeRF_python_files
     source_python.cc
-    source_python.cc
-    sink_python.cc python_bindings.cc)
+    sink_python.cc
+    python_bindings.cc)
 
 GR_PYBIND_MAKE_OOT(bladeRF 
    ../..

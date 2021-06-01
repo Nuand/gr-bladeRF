@@ -108,7 +108,7 @@ templates:
      import bladeRF
      import time
   make: |
-    bladerf.${sourk}(
+    bladeRF.${sourk}(
         args="numchan=" + str(${'$'}{nchan}) + " " + ${'$'}{args}
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
