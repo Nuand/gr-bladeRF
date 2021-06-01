@@ -48,7 +48,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 102.2e6
+    value: 102.9e6
   states:
     bus_sink: false
     bus_source: false
@@ -90,32 +90,37 @@ blocks:
     orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '0'
-    step: '1'
-    stop: '100'
-    value: '1'
+    step: '0.05'
+    stop: '1'
+    value: '0.3'
     widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [776, 84.0]
+    coordinate: [792, 68.0]
     rotation: 0
     state: true
-- name: analog_wfm_rcv_0
-  id: analog_wfm_rcv
+- name: analog_fm_demod_cf_0
+  id: analog_fm_demod_cf
   parameters:
     affinity: ''
     alias: ''
-    audio_decimation: '1'
+    audio_decim: '4'
+    audio_pass: '15000'
+    audio_stop: '20000'
+    chan_rate: samp_rate/10
     comment: ''
+    deviation: '75000'
+    gain: '1.0'
     maxoutbuf: '0'
     minoutbuf: '0'
-    quad_rate: 500e3
+    tau: 75e-6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 196.0]
+    coordinate: [568, 124.0]
     rotation: 0
     state: true
 - name: audio_sink_0
@@ -132,7 +137,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1264, 268.0]
+    coordinate: [1088, 300.0]
     rotation: 0
     state: true
 - name: bladeRF_source_0
@@ -145,7 +150,7 @@ blocks:
     bb_gain1: '20'
     bias_tee0: 'False'
     bias_tee1: 'False'
-    bw0: '200000'
+    bw0: '500000'
     bw1: '200000'
     comment: ''
     corr0: '0'
@@ -162,7 +167,7 @@ blocks:
     gain_mode1: 'False'
     if_gain0: '20'
     if_gain1: '20'
-    in_clk: ONBOARD
+    in_clk: EXTERNAL
     iq_balance_mode0: '0'
     iq_balance_mode1: '0'
     maxoutbuf: '0'
@@ -179,7 +184,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 116.0]
+    coordinate: [16, 92.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0
@@ -197,31 +202,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1056, 268.0]
-    rotation: 0
-    state: true
-- name: low_pass_filter_0
-  id: low_pass_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    beta: '6.76'
-    comment: ''
-    cutoff_freq: cutoff
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: samp_rate
-    type: fir_filter_ccf
-    width: transition
-    win: window.WIN_HAMMING
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [352, 148.0]
+    coordinate: [896, 348.0]
     rotation: 0
     state: true
 - name: rational_resampler_xxx_0
@@ -230,27 +211,26 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    decim: '500'
+    decim: '10'
     fbw: '0'
-    interp: '48'
+    interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
     taps: '[]'
-    type: fff
+    type: ccc
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 276.0]
+    coordinate: [336, 108.0]
     rotation: 0
     state: true
 
 connections:
-- [analog_wfm_rcv_0, '0', rational_resampler_xxx_0, '0']
-- [bladeRF_source_0, '0', low_pass_filter_0, '0']
+- [analog_fm_demod_cf_0, '0', blocks_multiply_const_vxx_0, '0']
+- [bladeRF_source_0, '0', rational_resampler_xxx_0, '0']
 - [blocks_multiply_const_vxx_0, '0', audio_sink_0, '0']
-- [low_pass_filter_0, '0', analog_wfm_rcv_0, '0']
-- [rational_resampler_xxx_0, '0', blocks_multiply_const_vxx_0, '0']
+- [rational_resampler_xxx_0, '0', analog_fm_demod_cf_0, '0']
 
 metadata:
   file_format: 1
