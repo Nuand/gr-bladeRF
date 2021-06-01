@@ -31,9 +31,9 @@ APPEND_LIB_LIST(
     ${Volk_LIBRARIES}
 )
 
-list(APPEND bladeRF_sources
+list(APPEND gr_bladerf_srcs
     ${CMAKE_CURRENT_SOURCE_DIR}/bladerf_source_c.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/bladerf_sink_c.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/bladerf_common.cc
 )
-set(bladeRF_sources ${bladeRF_sources} PARENT_SCOPE)
+set(gr_bladerf_srcs ${gr_bladerf_srcs} PARENT_SCOPE)

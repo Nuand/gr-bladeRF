@@ -8,10 +8,10 @@
 ########################################################################
 # Check if there is C++ code at all
 ########################################################################
-if(NOT bladeRF_sources)
+if(NOT gr_bladerf_srcs)
     MESSAGE(STATUS "No C++ sources... skipping python bindings")
     return()
-endif(NOT bladeRF_sources)
+endif(NOT gr_bladerf_srcs)
 
 ########################################################################
 # Check for pygccxml

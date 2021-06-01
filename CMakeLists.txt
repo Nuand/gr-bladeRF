@@ -11,6 +11,7 @@
 ########################################################################
 cmake_minimum_required(VERSION 3.8)
 project(gr-bladeRF CXX C)
+include(GNUInstallDirs)
 enable_testing()
 
 # Install to PyBOMBS target prefix if defined
@@ -48,6 +49,7 @@ if((CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
     AND NOT WIN32)
     #http://gcc.gnu.org/wiki/Visibility
     add_definitions(-fvisibility=hidden)
+    add_definitions(-fvisibility-inlines-hidden)
 endif()
 
 IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -70,6 +72,57 @@ ELSE()
     message(WARNING "C standard could not be set because compiler is not GNU, Clang or MSVC.")
 ENDIF()
 
+# Misc options
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
+    CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    add_definitions(-Wall)
+    add_definitions(-Wextra)
+    add_definitions(-Wno-unused-parameter)
+    add_definitions(-Wsign-compare)
+    #add_definitions(-Wconversion)
+    #add_definitions(-pedantic)
+    #add_definitions(-ansi)
+endif()
+
+# SIMD
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "x86_64|AMD64|x86")
+    set(USE_SIMD "SSE2" CACHE STRING "Use SIMD instructions")
+else()
+    set(USE_SIMD "no" CACHE STRING "Use SIMD instructions")
+endif()
+set(USE_SIMD_VALUES "no" "SSE2" "AVX")
+set_property(CACHE USE_SIMD PROPERTY STRINGS ${USE_SIMD_VALUES})
+list(FIND USE_SIMD_VALUES ${USE_SIMD} USE_SIMD_INDEX)
+if(${USE_SIMD_INDEX} EQUAL -1)
+    message(FATAL_ERROR "Option ${USE_SIMD} not supported, valid entries are ${USE_SIMD_VALUES}")
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
+    CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    if(USE_SIMD MATCHES SSE2)
+        add_definitions(-msse2)
+        add_definitions(-DUSE_SSE2)
+    endif()
+    if(USE_SIMD MATCHES AVX)
+        add_definitions(-march=native)
+        add_definitions(-DUSE_AVX)
+    endif()
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(USE_SIMD MATCHES SSE2)
+        add_definitions(/arch:SSE2)
+        add_definitions(-DUSE_SSE2)
+    endif()
+    if(USE_SIMD MATCHES AVX)
+        add_definitions(/arch:AVX)
+        add_definitions(-DUSE_AVX)
+    endif()
+    # boost feels like using lib pragmas to link to libs,
+    # but the boost libs might not even be in the (default) lib search path
+    add_definitions(-DBOOST_ALL_NO_LIB)
+    # macro turns std::min into errors...
+    add_definitions(-DNOMINMAX)
+endif()
+
 ########################################################################
 # Install directories
 ########################################################################
@@ -80,6 +133,9 @@ find_package(gnuradio-iqbalance PATHS ${Gnuradio_DIR})
 include(GrVersion)
 
 include(GrPlatform) #define LIB_SUFFIX
+
+include(GrComponent)
+
 
 if(NOT CMAKE_MODULES_DIR)
   set(CMAKE_MODULES_DIR lib${LIB_SUFFIX}/cmake)
@@ -112,6 +168,10 @@ if(APPLE)
     endif(NOT CMAKE_BUILD_WITH_INSTALL_RPATH)
 endif(APPLE)
 
+########################################################################
+# Hardware
+########################################################################
+find_package(LibbladeRF)
 ########################################################################
 # Find gnuradio build dependencies
 ########################################################################
