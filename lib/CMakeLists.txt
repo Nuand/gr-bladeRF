@@ -13,6 +13,7 @@ include(GrPlatform) #define LIB_SUFFIX
 list(APPEND gr_bladerf_srcs
     source_impl.cc
     sink_impl.cc
+    ranges.cc
 )
 
 #-pthread Adds support for multithreading with the pthreads library.
