@@ -34,7 +34,7 @@ namespace gr {
        * class. bladeRF::source::make is the public interface for
        * creating new instances.
        */
-      static sptr make(const std::string & args);
+      static sptr make(const std::string & args = "");
 
       /*!
        * Get the number of channels the underlying radio hardware offers.

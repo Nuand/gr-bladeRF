@@ -19,6 +19,102 @@
  static const char *__doc_gr_bladeRF_source = R"doc()doc";
 
 
+ static const char *__doc_gr_bladeRF_source_source_0 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_source_1 = R"doc()doc";
+
+
  static const char *__doc_gr_bladeRF_source_make = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_num_channels = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_sample_rates = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_sample_rate = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_sample_rate = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_freq_range = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_center_freq = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_center_freq = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_freq_corr = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_freq_corr = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_gain_names = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_gain_range_0 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_gain_range_1 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_gain_mode = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_gain_mode = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_gain_0 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_gain_1 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_gain_0 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_gain_1 = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_if_gain = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_bb_gain = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_antennas = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_antenna = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_antenna = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_dc_offset_mode = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_dc_offset = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_iq_balance_mode = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_iq_balance = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_set_bandwidth = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_bandwidth = R"doc()doc";
+
+
+ static const char *__doc_gr_bladeRF_source_get_bandwidth_range = R"doc()doc";
 
   
