@@ -9,5 +9,5 @@ RUN sudo echo "resolvconf resolvconf/linkify-resolvconf boolean false" | sudo de
 RUN sudo apt-get install -y keyboard-configuration
 RUN sudo apt-get install -y qtcreator libxrender1 gdb
 RUN sudo apt-get install -y fonts-ubuntu
-RUN sudo apt install python3-pygccxml
+RUN sudo apt install -y python3-pygccxml
 CMD ["/usr/bin/qtcreator"]
