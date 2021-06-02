@@ -46,6 +46,13 @@ parameters:
   default: 1
   options: [ ${", ".join([str(n) for n in range(1, max_nchan+1)])} ]
   
+- id: verbosity
+  label: 'Verbosity'
+  dtype: enum
+  default: verbose
+  options: ['verbose', 'debug', 'info', 'warning', 'error', 'critical', 'silent']
+  option_labels: [verbose, debug, info, warning, error, critical, silent]
+  
 - id: sample_rate
   label: 'Sample Rate (sps)'
   dtype: real
@@ -81,8 +88,8 @@ parameters:
   dtype: real
   default: 10000
 
-
 ${params}
+
 
 inputs:
 - domain: message
@@ -109,7 +116,9 @@ templates:
      import time
   make: |
     bladeRF.${sourk}(
-        args="numchan=" + str(${'$'}{nchan}) + " " + ${'$'}{args}
+        args="numchan=" + str(${'$'}{nchan}) + ","
+             + "verbosity=" + '${'$'}{verbosity}' 
+              + ${'$'}{args}
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
     % for n in range(max_nchan):
@@ -119,7 +128,7 @@ templates:
     % if sourk == 'source':
     self.${'$'}{id}.set_dc_offset_mode(${'$'}{${'dc_offset_mode' + str(n)}}, ${n})
     self.${'$'}{id}.set_iq_balance_mode(${'$'}{${'iq_balance_mode' + str(n)}}, ${n})
-    self.${'$'}{id}.set_gain_mode(${'$'}{${'gain_mode' + str(n)}}, ${n})
+    self.${'$'}{id}.set_gain_mode(${'$'}{${'gain_mode' + str(n)}}, ${n})    
     % endif
     self.${'$'}{id}.set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     self.${'$'}{id}.set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})

@@ -40,6 +40,7 @@
 
 #include "bladerf_common.h"
 
+
 /* Defaults for these values. */
 static size_t const NUM_BUFFERS = 512;
 static size_t const NUM_SAMPLES_PER_BUFFER = (4 * 1024);

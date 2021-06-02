@@ -76,7 +76,6 @@ bladerf_source_c::bladerf_source_c(const std::string &args) :
   int status;
 
   dict_t dict = params_to_dict(args);
-
   /* Perform src/sink agnostic initializations */
   init(dict, BLADERF_RX);
 

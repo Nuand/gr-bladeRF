@@ -54,7 +54,10 @@ inline std::vector< std::string > args_to_vector( const std::string &args )
   tokenizer_t tokens(args, separator);
 
   for (std::string token : tokens)
-    result.push_back(token);
+  {
+      result.push_back(token);
+  }
+
 
   return result;
 }
@@ -94,7 +97,7 @@ inline pair_t param_to_pair( const std::string &param )
 
 inline dict_t params_to_dict( const std::string &params )
 {
-  dict_t result;
+  dict_t result;  
 
   std::vector< std::string > param_list = params_to_vector( params );
   for (std::string param : param_list)
@@ -121,7 +124,7 @@ inline gr::io_signature::sptr args_to_io_signature( const std::string &args )
 {
   size_t max_nchan = 0;
   size_t dev_nchan = 0;
-  std::vector< std::string > arg_list = args_to_vector( args );
+  std::vector< std::string > arg_list = params_to_vector( args );
 
   for (std::string arg : arg_list)
   {

@@ -32,7 +32,7 @@ namespace gr {
             throw std::runtime_error("No supported devices found "
                                      "(check the connection and/or udev rules).");
 
-        device_ = make_bladerf_sink_c( dev_list[0] ); //todo: get by id from block args
+        device_ = make_bladerf_sink_c( args ); //todo: get by id from block args
     }
 
     /*

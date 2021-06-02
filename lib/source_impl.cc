@@ -34,7 +34,7 @@ namespace gr {
             throw std::runtime_error("No supported devices found "
                                      "(check the connection and/or udev rules).");
 
-        device_ = make_bladerf_source_c( dev_list[0] ); //todo: get by id from block args
+        device_ = make_bladerf_source_c( args ); //todo: get by id from block args
         for (size_t i = 0; i < device_->get_num_channels(); i++) {
   #ifdef HAVE_IQBALANCE
           gr::iqbalance::optimize_c::sptr iq_opt = gr::iqbalance::optimize_c::make( 0 );
