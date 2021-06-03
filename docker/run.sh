@@ -15,4 +15,4 @@ sudo docker run \
   -v /run/user/1000/pulse:/run/user/1000/pulse \
   -v $(pwd):/home/blade/gr-bladeRF \
   -u blade \
-  blade-dev /bin/bash
+  smusihin/blade-dev /bin/bash
