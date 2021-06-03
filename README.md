@@ -1,7 +1,7 @@
 # gr-bladeRF
 
 You can use a docker container for quick deployment. 
-Docker Installation: https://docs.docker.com/engine/install/ubuntu/
+Easy docker installation: https://docs.docker.com/engine/install/ubuntu/#install-from-a-package
 
 After install run next commands:
 
