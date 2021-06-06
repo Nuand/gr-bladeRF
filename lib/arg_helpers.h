@@ -122,46 +122,24 @@ struct is_nchan_argument
 
 inline gr::io_signature::sptr args_to_io_signature( const std::string &args )
 {
-  size_t max_nchan = 0;
+  std::cout << "Args: " << args << std::endl;
   size_t dev_nchan = 0;
   std::vector< std::string > arg_list = params_to_vector( args );
-
   for (std::string arg : arg_list)
   {
     if ( arg.find( "numchan=" ) == 0 ) // try to parse global nchan value
     {
       pair_t pair = param_to_pair( arg );
-      max_nchan = boost::lexical_cast<size_t>( pair.second );
-    }
-  }
-
-  arg_list.erase( std::remove_if( // remove any global nchan tokens
-                    arg_list.begin(),
-                    arg_list.end(),
-                    is_nchan_argument() ),
-                  arg_list.end() );
-
-  // try to parse device specific nchan values, assume 1 channel if none given
-
-  for (std::string arg : arg_list)
-  {
-    dict_t dict = params_to_dict(arg);
-    if (dict.count("nchan"))
-    {
-      dev_nchan += boost::lexical_cast<size_t>( dict["nchan"] );
-    }
-    else // no channels given via args
-    {
-      dev_nchan++; // assume one channel
+      dev_nchan = boost::lexical_cast<size_t>( pair.second );
+      break;
     }
   }
 
   // if at least one nchan was given, perform a sanity check
-  if ( max_nchan && dev_nchan && max_nchan != dev_nchan )
+  if ( !dev_nchan )
     throw std::runtime_error("Wrong device arguments specified. Missing nchan?");
 
-  const size_t nchan = std::max<size_t>(dev_nchan, 1); // assume at least one
-  return gr::io_signature::make(nchan, nchan, sizeof(gr_complex));
+  return gr::io_signature::make(dev_nchan, dev_nchan, sizeof(gr_complex));
 }
 
 #endif // OSMOSDR_ARG_HELPERS_H

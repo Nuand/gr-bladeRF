@@ -34,11 +34,11 @@ parameters:
       type: [fc32]
   hide: part
   
-- id: args
+- id: device_id
   label: 'Device'
   dtype: string
-  default: '""'
-  hide: ${'$'}{ 'none' if args else 'part'}
+  default: '0'
+  hide: ${'$'}{ 'none' if device_id else 'part'}
   
 - id: nchan
   label: 'Number Channels'
@@ -88,6 +88,13 @@ parameters:
   dtype: real
   default: 10000
 
+- id: xb200
+  label: 'XB-200'
+  dtype: enum
+  default: auto
+  options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  option_labels: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
+
 ${params}
 
 
@@ -116,9 +123,17 @@ templates:
      import time
   make: |
     bladeRF.${sourk}(
-        args="numchan=" + str(${'$'}{nchan}) + ","
-             + "verbosity=" + '${'$'}{verbosity}' 
-              + ${'$'}{args}
+        args="numchan=" + str(${'$'}{nchan})
+             + ",type=" + '${'$'}{type}'
+             + ",bladerf=" +  str(${'$'}{device_id})
+             + ",verbosity=" + '${'$'}{verbosity}'
+             + ",fpga=" + str(${'$'}{fpga_image})
+             + ",power_monitoring=" + str(${'$'}{power_monitoring})
+             + ",ref_clk=" + str(${'$'}{ref_clk})
+             + ",in_clk=" + '${'$'}{in_clk}'
+             + ",out_clk=" + str(${'$'}{out_clk})
+             + ",dac=" + str(${'$'}{dac})
+             + ",xb200=" + '${'$'}{xb200}'
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
     % for n in range(max_nchan):
@@ -258,14 +273,6 @@ PARAMS_TMPL = """
   default: False
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
   
-- id: xb_200${n}
-  label: 'Ch${n}: XB-200'
-  dtype: enum
-  default: auto
-  options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
-  option_labels: [auto, auto3db, 50M, 144M, 222M, custom]
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
-
 % if sourk == 'source':
 - id: dc_offset_mode${n}
   label: 'Ch${n}: DC Offset Mode'
