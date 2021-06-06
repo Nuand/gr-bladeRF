@@ -222,10 +222,10 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
 
   /* Load a FPGA */
   if (dict.count("fpga")) {
-    if (dict.count("fpga-reload") == 0 &&
+    if ((dict.count("fpga-reload") == 0 || _get(dict,"fpga-reload") == "False") &&
         bladerf_is_fpga_configured(_dev.get()) == 1) {
 
-      BLADERF_WARNING("FPGA is already loaded. Set fpga-reload=1 to force a "
+      BLADERF_WARNING("FPGA is already loaded. Set fpga-reload=False to force a "
                       "reload.");
     } else {
       std::string fpga = _get(dict, "fpga");

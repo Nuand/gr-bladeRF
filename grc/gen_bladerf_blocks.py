@@ -58,37 +58,57 @@ parameters:
   dtype: real
   default: samp_rate
   
+- id: fpga_reload
+  label: 'FPGA reload'
+  category: Advanced
+  dtype: enum
+  default: auto
+  options: ['False', 'True']
+  hide: part
+  
 - id: fpga_image
+  category: Advanced
   label: 'FPGA image'
   dtype: string
+  hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part'}  
     
 - id: power_monitoring
-  label: 'Enable power monitoring'
-  dtype: bool
+  category: Advanced
+  label: 'Power monitoring'
+  dtype: enum
   default: False
- 
+  options: [False, True]
+  option_labels: ['Disable', 'Enable']
+  
 - id: ref_clk
+  category: Advanced
   label: 'Reference clock'
   dtype: real
   
 - id: in_clk
+  category: Advanced
   label: 'Input clock'
   dtype: enum
   default: auto
   options: ['ONBOARD', 'EXTERNAL']
-  option_labels: ['ONBOARD', 'EXTERNAL']
+  option_labels: ['Onboard', 'External']
   
 - id: out_clk
+  category: Advanced
   label: 'Output clock'
-  dtype: bool
+  dtype: enum
   default: False
+  options: [False, True]
+  option_labels: ['Disable', 'Enable']
 
 - id: dac
+  category: Advanced
   label: 'VCXTO DAC'
   dtype: real
   default: 10000
 
 - id: xb200
+  category: Advanced
   label: 'XB-200'
   dtype: enum
   default: auto
@@ -128,6 +148,7 @@ templates:
              + ",bladerf=" +  str(${'$'}{device_id})
              + ",verbosity=" + '${'$'}{verbosity}'
              + ",fpga=" + str(${'$'}{fpga_image})
+             + ",fpga-reload=" + '${'$'}{fpga_reload}'
              + ",power_monitoring=" + str(${'$'}{power_monitoring})
              + ",ref_clk=" + str(${'$'}{ref_clk})
              + ",in_clk=" + '${'$'}{in_clk}'
@@ -250,32 +271,37 @@ file_format: 1
 
 PARAMS_TMPL = """
 - id: freq${n}
-  label: 'Ch${n}: Center frequency (Hz)'
+  category: 'Channel ${n}'
+  label: 'Center frequency (Hz)'
   dtype: real
   default: 1e8
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
   
 - id: corr${n}
-  label: 'Ch${n}: Frequency Correction (ppm)'
+  category: 'Channel ${n}'
+  label: 'Frequency Correction (ppm)'
   dtype: real
   default: 0
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
    
 - id: bw${n}
-  label: 'Ch${n}: Bandwidth (Hz)'
+  category: 'Channel ${n}'
+  label: 'Bandwidth (Hz)'
   dtype: real
   default: 200000
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
   
 - id: bias_tee${n}
-  label: 'Ch${n}: Bias tee'
+  category: 'Channel ${n}'
+  label: 'Bias tee'
   dtype: bool
   default: False
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
   
 % if sourk == 'source':
 - id: dc_offset_mode${n}
-  label: 'Ch${n}: DC Offset Mode'
+  category: 'Channel ${n}'
+  label: 'DC Offset Mode'
   dtype: int
   default: 0
   options: [0, 1, 2]  
@@ -283,7 +309,8 @@ PARAMS_TMPL = """
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
   
 - id: iq_balance_mode${n}
-  label: 'Ch${n}: IQ Balance Mode'
+  category: 'Channel ${n}'
+  label: 'IQ Balance Mode'
   dtype: int
   default: 0
   options: [0, 1, 2]
@@ -291,7 +318,8 @@ PARAMS_TMPL = """
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
   
 - id: gain_mode${n}
-  label: 'Ch${n}: Gain Mode'
+  category: 'Channel ${n}'
+  label: 'Gain Mode'
   dtype: bool
   default: False
   options: [False, True]
@@ -300,19 +328,22 @@ PARAMS_TMPL = """
 % endif
 
 - id: gain${n}
-  label: 'Ch${n}: RF Gain (dB)'
+  category: 'Channel ${n}'
+  label: 'RF Gain (dB)'
   dtype: real
   default: 10
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
   
 - id: if_gain${n}
-  label: 'Ch${n}: IF Gain (dB)'
+  category: 'Channel ${n}'
+  label: 'IF Gain (dB)'
   dtype: real
   default: 20
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
   
 - id: bb_gain${n}
-  label: 'Ch${n}: BB Gain (dB)'
+  category: 'Channel ${n}'
+  label: 'BB Gain (dB)'
   dtype: real
   default: 20
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
