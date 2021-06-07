@@ -76,9 +76,8 @@ parameters:
   category: Advanced
   label: 'Power monitoring'
   dtype: enum
-  default: False
-  options: [False, True]
-  option_labels: ['Disable', 'Enable']
+  default: auto
+  options: ['Disable', 'Enable']
   
 - id: ref_clk
   category: Advanced
@@ -123,8 +122,14 @@ inputs:
   id: command
   optional: true
 % if sourk == 'source':
+- domain: message
+  id: pmic_in
+  optional: true
 
 outputs:
+- domain: message
+  id: pmic_out
+  optional: true
 % endif
 - domain: stream
   dtype: ${'$'}{type.type}
@@ -136,6 +141,8 @@ outputs:
   id: async_msgs
   optional: true
 % endif
+
+
 
 templates:
   imports: |-
@@ -149,7 +156,7 @@ templates:
              + ",verbosity=" + '${'$'}{verbosity}'
              + ",fpga=" + str(${'$'}{fpga_image})
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
-             + ",power_monitoring=" + str(${'$'}{power_monitoring})
+             + ",power_monitoring=" + '${'$'}{power_monitoring}'
              + ",ref_clk=" + str(${'$'}{ref_clk})
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})

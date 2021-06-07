@@ -242,6 +242,8 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
     }
   }
 
+
+
   if (bladerf_is_fpga_configured(_dev.get()) != 1) {
     BLADERF_THROW("The FPGA is not configured! Provide device argument "
                   "fpga=/path/to/the/bitstream.rbf to load it.");

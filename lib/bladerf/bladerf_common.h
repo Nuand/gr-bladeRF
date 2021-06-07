@@ -162,6 +162,18 @@ protected:
   void set_channel_enable(bladerf_channel ch, bool enable);
   bool get_channel_enable(bladerf_channel ch);
 
+
+  template<typename T>
+  T get_pmic(bladerf_pmic_register reg)
+  {
+      T value;
+      auto status = bladerf_get_pmic_register(_dev.get(),reg,&value);
+      if (status != 0) {
+        BLADERF_THROW_STATUS(status, "bladerf_get_pmic_register failed");
+      }
+      return value;
+  }
+
   /* Set libbladeRF verbosity */
   void set_verbosity(std::string const &verbosity);
 

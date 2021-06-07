@@ -79,6 +79,14 @@ bladerf_source_c::bladerf_source_c(const std::string &args) :
   /* Perform src/sink agnostic initializations */
   init(dict, BLADERF_RX);
 
+  message_port_register_in(pmt::mp("pmic_in"));
+  message_port_register_out(pmt::mp("pmic_out"));
+
+  set_msg_handler(pmt::mp("pmic_in"),[=](const pmt::pmt_t & msg)
+  {
+      message_port_pub(pmt::mp("pmic_out"), msg);
+  });
+
   /* Handle setting of sampling mode */
   if (dict.count("sampling")) {
     bladerf_sampling sampling = BLADERF_SAMPLING_UNKNOWN;

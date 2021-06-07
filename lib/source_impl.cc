@@ -25,9 +25,8 @@ namespace gr {
               gr::io_signature::make(0,0,0),
               args_to_io_signature(args))
     {
-        //in osmocom args for make source is strings,
-        //therefore all params is strings
-        //todo: change to vector<bladerf_devinfo>
+        message_port_register_hier_in(pmt::mp("pmic_in"));
+        message_port_register_hier_out(pmt::mp("pmic_out"));
 
         auto dev_list = bladerf_source_c::get_devices();
         if(dev_list.size() == 0)
@@ -49,9 +48,14 @@ namespace gr {
           _iq_opt.push_back( iq_opt.get() );
           _iq_fix.push_back( iq_fix.get() );
   #else
-          connect(device_, i, self(), i);
+          connect(device_, i, self(), i);          
   #endif
+          msg_connect(self(), pmt::mp("pmic_in"), device_, pmt::mp("pmic_in"));
+          msg_connect(device_,pmt::mp("pmic_out"), self(), pmt::mp("pmic_out"));
         }
+
+
+
      }
 
     source_impl::~source_impl()
