@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [312, 4.0]
+    coordinate: [280, 12.0]
     rotation: 0
     state: true
 - name: freq
@@ -62,7 +62,23 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [512, 12.0]
+    coordinate: [568, 12.0]
+    rotation: 0
+    state: true
+- name: power
+  id: variable_qtgui_label
+  parameters:
+    comment: ''
+    formatter: None
+    gui_hint: ''
+    label: ''
+    type: real
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 12.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -86,7 +102,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [416, 4.0]
+    coordinate: [368, 12.0]
     rotation: 0
     state: true
 - name: volume
@@ -107,7 +123,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 4.0]
+    coordinate: [704, 12.0]
     rotation: 0
     state: true
 - name: analog_fm_demod_cf_0
@@ -197,20 +213,6 @@ blocks:
     coordinate: [88, 100.0]
     rotation: 0
     state: true
-- name: blocks_message_debug_0
-  id: blocks_message_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    en_uvec: 'True'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [576, 440.0]
-    rotation: 0
-    state: true
 - name: blocks_message_strobe_0
   id: blocks_message_strobe
   parameters:
@@ -219,13 +221,27 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    msg: pmt.intern("TEST")
+    msg: pmt.intern("POWER")
     period: '1000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [64, 532.0]
+    coordinate: [88, 540.0]
+    rotation: 0
+    state: true
+- name: blocks_msgpair_to_var_0
+  id: blocks_msgpair_to_var
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    target: power
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 140.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0
@@ -263,14 +279,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 188.0]
+    coordinate: [408, 228.0]
     rotation: 0
     state: true
 
 connections:
 - [analog_fm_demod_cf_0, '0', blocks_multiply_const_vxx_0, '0']
 - [bladeRF_source_0, '0', rational_resampler_xxx_0, '0']
-- [bladeRF_source_0, pmic_out, blocks_message_debug_0, print]
+- [bladeRF_source_0, pmic_out, blocks_msgpair_to_var_0, inpair]
 - [blocks_message_strobe_0, strobe, bladeRF_source_0, pmic_in]
 - [blocks_multiply_const_vxx_0, '0', audio_sink_0, '0']
 - [rational_resampler_xxx_0, '0', analog_fm_demod_cf_0, '0']

@@ -426,7 +426,37 @@ void bladerf_common::set_channel_enable(bladerf_channel ch, bool enable)
 
 bool bladerf_common::get_channel_enable(bladerf_channel ch)
 {
-  return _enables[ch];
+    return _enables[ch];
+}
+
+std::string bladerf_common::get_pmic_value(const std::string &reg_name)
+{
+    bladerf_pmic_register reg;
+    if(reg_name == "CONFIGURATION")
+        reg = BLADERF_PMIC_CONFIGURATION;
+    else if(reg_name == "VOLTAGE_SHUNT")
+        reg = BLADERF_PMIC_VOLTAGE_SHUNT;
+    else if(reg_name == "VOLTAGE_BUS")
+        reg = BLADERF_PMIC_VOLTAGE_BUS;
+    else if(reg_name == "POWER")
+        reg = BLADERF_PMIC_POWER;
+    else if(reg_name == "CURRENT")
+        reg = BLADERF_PMIC_CURRENT;
+    else if(reg_name == "CALIBRATION")
+        reg = BLADERF_PMIC_CALIBRATION;
+    else return {};
+    if(reg == BLADERF_PMIC_CONFIGURATION || reg == BLADERF_PMIC_CALIBRATION)
+    {
+        //https://github.com/Nuand/bladeRF/blob/master/host/libraries/libbladeRF/src/board/bladerf2/bladerf2.c#L3581
+        //while not supported
+        //return std::to_string(get_pmic<uint16_t>(reg));
+        return {};
+    }
+    else
+    {
+        return std::to_string(get_pmic<float>(reg));
+    }
+
 }
 
 void bladerf_common::set_verbosity(std::string const &verbosity)

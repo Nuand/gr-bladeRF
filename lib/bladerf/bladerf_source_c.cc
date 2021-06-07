@@ -84,7 +84,11 @@ bladerf_source_c::bladerf_source_c(const std::string &args) :
 
   set_msg_handler(pmt::mp("pmic_in"),[=](const pmt::pmt_t & msg)
   {
-      message_port_pub(pmt::mp("pmic_out"), msg);
+      auto type = pmt::symbol_to_string(msg);
+      auto value = get_pmic_value(type);
+      auto pair = pmt::cons(msg,pmt::string_to_symbol(value));
+      message_port_pub(pmt::mp("pmic_out"), pair);
+
   });
 
   /* Handle setting of sampling mode */

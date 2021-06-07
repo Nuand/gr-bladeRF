@@ -162,6 +162,7 @@ protected:
   void set_channel_enable(bladerf_channel ch, bool enable);
   bool get_channel_enable(bladerf_channel ch);
 
+  std::string get_pmic_value(const std::string & reg_name);
 
   template<typename T>
   T get_pmic(bladerf_pmic_register reg)
