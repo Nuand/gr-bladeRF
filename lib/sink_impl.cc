@@ -27,12 +27,17 @@ namespace gr {
                         gr::io_signature::make(0, 0, 0))
       , sample_rate_(0)
     {
+        message_port_register_hier_in(pmt::mp("pmic_in"));
+        message_port_register_hier_out(pmt::mp("pmic_out"));
+
         auto dev_list = bladerf_sink_c::get_devices();
         if(dev_list.size() == 0)
             throw std::runtime_error("No supported devices found "
                                      "(check the connection and/or udev rules).");
 
         device_ = make_bladerf_sink_c( args ); //todo: get by id from block args
+        msg_connect(self(), pmt::mp("pmic_in"), device_, pmt::mp("pmic_in"));
+        msg_connect(device_,pmt::mp("pmic_out"), self(), pmt::mp("pmic_out"));
     }
 
     /*

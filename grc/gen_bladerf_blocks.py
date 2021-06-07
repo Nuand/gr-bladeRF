@@ -121,27 +121,28 @@ inputs:
 - domain: message
   id: command
   optional: true
-% if sourk == 'source':
+  
 - domain: message
   id: pmic_in
   optional: true
-
+  
+% if sourk == 'source':
 outputs:
-- domain: message
-  id: pmic_out
-  optional: true
+
 % endif
 - domain: stream
   dtype: ${'$'}{type.type}
   multiplicity: ${'$'}{nchan}
 % if sourk == 'sink':
-
 outputs:
 - domain: message
   id: async_msgs
   optional: true
 % endif
 
+- domain: message
+  id: pmic_out
+  optional: true
 
 
 templates:
