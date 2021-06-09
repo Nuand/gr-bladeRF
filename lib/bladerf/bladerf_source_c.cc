@@ -65,7 +65,7 @@ bladerf_source_c_sptr make_bladerf_source_c(const std::string &args)
  * The private constructor
  */
 bladerf_source_c::bladerf_source_c(const std::string &args) :
-  gr::sync_block( "bladerf_source_c",
+  common_sync_block( "bladerf_source_c",
                   gr::io_signature::make(0, 0, 0),
                   args_to_io_signature(args)),
   _16icbuf(NULL),
@@ -79,17 +79,7 @@ bladerf_source_c::bladerf_source_c(const std::string &args) :
   /* Perform src/sink agnostic initializations */
   init(dict, BLADERF_RX);
 
-  message_port_register_in(pmt::mp("pmic_in"));
-  message_port_register_out(pmt::mp("pmic_out"));
-
-  set_msg_handler(pmt::mp("pmic_in"),[=](const pmt::pmt_t & msg)
-  {
-      auto type = pmt::symbol_to_string(msg);
-      auto value = get_pmic_value(type);
-      auto pair = pmt::cons(msg,pmt::string_to_symbol(value));
-      message_port_pub(pmt::mp("pmic_out"), pair);
-
-  });
+  setup_blade_messaging();
 
   /* Handle setting of sampling mode */
   if (dict.count("sampling")) {

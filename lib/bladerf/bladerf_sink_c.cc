@@ -65,7 +65,7 @@ bladerf_sink_c_sptr make_bladerf_sink_c(const std::string &args)
  * The private constructor
  */
 bladerf_sink_c::bladerf_sink_c(const std::string &args) :
-  gr::sync_block( "bladerf_sink_c",
+  common_sync_block( "bladerf_sink_c",
                   args_to_io_signature(args),
                   gr::io_signature::make(0, 0, 0)),
   _16icbuf(NULL),
@@ -73,18 +73,7 @@ bladerf_sink_c::bladerf_sink_c(const std::string &args) :
   _in_burst(false),
   _running(false)
 {
-    message_port_register_in(pmt::mp("pmic_in"));
-    message_port_register_out(pmt::mp("pmic_out"));
-
-    set_msg_handler(pmt::mp("pmic_in"),[=](const pmt::pmt_t & msg)
-    {
-        auto type = pmt::symbol_to_string(msg);
-        auto value = get_pmic_value(type);
-        auto pair = pmt::cons(msg,pmt::string_to_symbol(value));
-        message_port_pub(pmt::mp("pmic_out"), pair);
-
-    });
-
+  setup_blade_messaging();
   dict_t dict = params_to_dict(args);
 
   /* Perform src/sink agnostic initializations */

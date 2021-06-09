@@ -21,7 +21,7 @@
 #ifndef INCLUDED_BLADERF_SOURCE_C_H
 #define INCLUDED_BLADERF_SOURCE_C_H
 
-#include <gnuradio/sync_block.h>
+#include "common_sync_block.h"
 #include "bladerf_common.h"
 #include "osmosdr/ranges.h"
 
@@ -50,8 +50,7 @@ typedef std::shared_ptr<bladerf_source_c> bladerf_source_c_sptr;
 bladerf_source_c_sptr make_bladerf_source_c(const std::string &args = "");
 
 class bladerf_source_c :
-  public gr::sync_block,
-  protected bladerf_common
+  public common_sync_block
 {
 private:
   // The friend declaration allows bladerf_make_source_c to

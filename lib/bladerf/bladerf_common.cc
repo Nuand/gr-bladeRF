@@ -290,6 +290,8 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
                   % get_clock_source()));
   }
 
+
+
   if (dict.count("smb")) {
     set_smb_frequency(boost::lexical_cast<double>(_get(dict, "smb")));
     BLADERF_INFO(boost::str(boost::format("SMB frequency set to %f Hz")
@@ -457,6 +459,35 @@ std::string bladerf_common::get_pmic_value(const std::string &reg_name)
         return std::to_string(get_pmic<float>(reg));
     }
 
+}
+
+void bladerf_common::setup_trigger(bladerf_channel ch, bladerf_trigger_signal signal, bool master)
+{
+    auto status = bladerf_trigger_init(_dev.get(), ch, signal, &_triggers[ch]);
+    if (status != 0) {
+      BLADERF_THROW_STATUS(status, "bladerf_trigger_init failed");
+    }
+    _triggers[ch].role  = master ? BLADERF_TRIGGER_ROLE_MASTER : BLADERF_TRIGGER_ROLE_SLAVE;
+    // Arm the triggering functionality
+    status = bladerf_trigger_arm(_dev.get(), &_triggers[ch], true, 0, 0);
+    if (status != 0) {
+      BLADERF_THROW_STATUS(status, "bladerf_trigger_arm failed");
+    }
+}
+
+void bladerf_common::fire_trigger()
+{
+    for(auto & trigger: _triggers)
+    {
+        if(trigger.second.role == BLADERF_TRIGGER_ROLE_MASTER)
+        {
+            auto status = bladerf_trigger_fire(_dev.get(), &trigger.second);
+            if (status != 0) {
+              BLADERF_THROW_STATUS(status, "bladerf_trigger_fire failed");
+            }
+            return;
+        }
+    }
 }
 
 void bladerf_common::set_verbosity(std::string const &verbosity)

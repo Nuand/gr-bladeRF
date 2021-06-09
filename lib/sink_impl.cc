@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include <gnuradio/io_signature.h>
+#include "common_hier_block.h"
 #include "sink_impl.h"
 #include "arg_helpers.h"
 
@@ -22,13 +22,12 @@ namespace gr {
      * The private constructor
      */
     sink_impl::sink_impl(const std::string & args)
-      : gr::hier_block2("sink_impl",
+      : common_hier_block("sink_impl",
                         args_to_io_signature(args),
                         gr::io_signature::make(0, 0, 0))
       , sample_rate_(0)
     {
-        message_port_register_hier_in(pmt::mp("pmic_in"));
-        message_port_register_hier_out(pmt::mp("pmic_out"));
+        setup_message_ports();
 
         auto dev_list = bladerf_sink_c::get_devices();
         if(dev_list.size() == 0)
@@ -36,8 +35,7 @@ namespace gr {
                                      "(check the connection and/or udev rules).");
 
         device_ = make_bladerf_sink_c( args ); //todo: get by id from block args
-        msg_connect(self(), pmt::mp("pmic_in"), device_, pmt::mp("pmic_in"));
-        msg_connect(device_,pmt::mp("pmic_out"), self(), pmt::mp("pmic_out"));
+        setup_device_connects(device_);
     }
 
     /*

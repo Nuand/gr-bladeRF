@@ -21,7 +21,7 @@
 #ifndef INCLUDED_BLADERF_SINK_C_H
 #define INCLUDED_BLADERF_SINK_C_H
 
-#include <gnuradio/sync_block.h>
+#include "common_sync_block.h"
 #include "bladerf_common.h"
 
 #include "osmosdr/ranges.h"
@@ -51,8 +51,7 @@ typedef std::shared_ptr<bladerf_sink_c> bladerf_sink_c_sptr;
 bladerf_sink_c_sptr make_bladerf_sink_c(const std::string &args = "");
 
 class bladerf_sink_c :
-  public gr::sync_block,
-  protected bladerf_common
+  public common_sync_block
 {
 private:
   // The friend declaration allows bladerf_make_sink_c to

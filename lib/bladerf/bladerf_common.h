@@ -58,6 +58,10 @@ typedef std::map<bladerf_channel, bool> bladerf_channel_enable_map;
 /* Mapping of bladerf_channel to gnuradio port/chan */
 typedef std::map<bladerf_channel, int> bladerf_channel_map;
 
+/* Mapping of bladerf_trigger to gnuradio port/chan */
+typedef std::map<bladerf_channel, bladerf_trigger> bladerf_trigger_map;
+
+
 /* Convenience macros for throwing a runtime error */
 #define BLADERF_THROW(message)                                              \
   {                                                                         \
@@ -175,6 +179,10 @@ protected:
       return value;
   }
 
+  void setup_trigger(bladerf_channel ch, bladerf_trigger_signal, bool master);
+  void fire_trigger();
+
+
   /* Set libbladeRF verbosity */
   void set_verbosity(std::string const &verbosity);
 
@@ -269,6 +277,7 @@ protected:
 
   bladerf_channel_map _chanmap; /**< map of antennas to channels */
   bladerf_channel_enable_map _enables;  /**< enabled channels */
+  bladerf_trigger_map _triggers;     /**< trigger for */
 
   /*****************************************************************************
    * Protected constants
