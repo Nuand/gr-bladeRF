@@ -113,6 +113,9 @@ parameters:
   default: auto
   options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
   option_labels: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  
+
+  
 
 ${params}
 
@@ -124,6 +127,10 @@ inputs:
   
 - domain: message
   id: pmic_in
+  optional: true
+  
+- domain: message
+  id: fire
   optional: true
   
 % if sourk == 'source':
@@ -143,6 +150,8 @@ outputs:
 - domain: message
   id: pmic_out
   optional: true
+
+
 
 
 templates:
@@ -355,6 +364,32 @@ PARAMS_TMPL = """
   dtype: real
   default: 20
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  
+- id: trigger${n}
+  label: 'Use trigger'
+  category: 'Channel ${n}' 
+  dtype: enum
+  default: 'False'
+  options: ['False', 'True']
+  hide: ${'$'}{'part' if (nchan > ${n}) else 'all'}
+
+- id: trigger_role${n}
+  label: Trigger role
+  category: 'Channel ${n}'
+  dtype: enum
+  options: ['master', 'slave']
+  option_labels: [master, slave] 
+  hide: ${'$'}{ 'part' if (nchan > ${n}) else 'all'} 
+  
+- id: trigger_signal${n}
+  label: Trigger role
+  category: 'Channel ${n}'
+  dtype: enum
+  default: 'J51_1'
+  options: ['J71_4', 'J51_1', 'MINI_EXP_1', 'USER_0', 'USER_1', 'USER_2', 'USER_3', 'USER_4', 'USER_5', 'USER_6', 'USER_7']
+  option_labels: ['J71_4', 'J51_1', 'MINI_EXP_1', 'USER_0', 'USER_1', 'USER_2', 'USER_3', 'USER_4', 'USER_5', 'USER_6', 'USER_7'] 
+  hide: ${'$'}{ 'part' if (nchan > ${n})  else 'all'} 
+  
 """
 
 
