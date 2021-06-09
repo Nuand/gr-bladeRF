@@ -158,7 +158,7 @@ templates:
   imports: |-
      import bladeRF
      import time
-  make: |
+  make: |      
     bladeRF.${sourk}(
         args="numchan=" + str(${'$'}{nchan})
              + ",type=" + '${'$'}{type}'
@@ -172,6 +172,13 @@ templates:
              + ",out_clk=" + str(${'$'}{out_clk})
              + ",dac=" + str(${'$'}{dac})
              + ",xb200=" + '${'$'}{xb200}'
+             + ",trigger0="+'${'$'}{trigger0}'
+             + ",trigger_role0="+'${'$'}{trigger_role0}'
+             + ",trigger_signal0="+'${'$'}{trigger_signal0}'
+             + ",trigger1="+'${'$'}{trigger1}'
+             + ",trigger_role1="+'${'$'}{trigger_role1}'
+             + ",trigger_signal1="+'${'$'}{trigger_signal1}'
+             
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
     % for n in range(max_nchan):
@@ -382,7 +389,7 @@ PARAMS_TMPL = """
   hide: ${'$'}{ 'part' if (nchan > ${n}) else 'all'} 
   
 - id: trigger_signal${n}
-  label: Trigger role
+  label: Trigger signal
   category: 'Channel ${n}'
   dtype: enum
   default: 'J51_1'

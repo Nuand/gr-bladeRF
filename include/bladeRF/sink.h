@@ -3,9 +3,9 @@
 #define INCLUDED_BLADERF_SINK_H
 
 #include <bladeRF/api.h>
-#include <gnuradio/hier_block2.h>
 #include "ranges.h"
 #include "time_spec.h"
+#include "common_hier_block.h"
 
 namespace gr {
   namespace bladeRF {
@@ -15,7 +15,7 @@ namespace gr {
      * \ingroup bladeRF
      *
      */
-    class BLADERF_API sink : virtual public gr::hier_block2
+    class BLADERF_API sink : virtual public common_hier_block
     {
      public:
       typedef std::shared_ptr<sink> sptr;
