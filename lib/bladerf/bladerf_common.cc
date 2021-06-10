@@ -247,7 +247,6 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
                   "fpga=/path/to/the/bitstream.rbf to load it.");
   }
 
-  /* XB-200 Transverter Board */
   if (dict.count("xb200") && _get(dict, "xb200") != "none") {
       init_xb200(_get(dict, "xb200"), direction);
 
@@ -261,6 +260,19 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
           init_refclk(freq);
       }
   }
+
+  if (dict.count("in_clk")) {
+      init_input_clock(_get(dict, "in_clk"));
+  }
+
+  if (dict.count("out_clk")) {
+      init_output_clock(_get(dict, "out_clk") == "True");
+  }
+
+  if (dict.count("dac")) {
+      init_dac(boost::lexical_cast<uint16_t>(_get(dict, "dac")));
+  }
+
 
   /* Show some info about the device we've opened */
   print_device_info();
@@ -461,6 +473,51 @@ void bladerf_common::init_refclk(int freq)
               BLADERF_WARNING("bladerf_set_pll_refclk: "
                               << bladerf_strerror(status));
             }
+        }
+    }
+}
+
+void bladerf_common::init_input_clock(const std::string &clock_selection)
+{
+    bladerf_clock_select sel;
+    if(clock_selection == "ONBOARD")
+        sel = CLOCK_SELECT_ONBOARD;
+    if(clock_selection == "EXTERNAL")
+        sel = CLOCK_SELECT_EXTERNAL;
+
+    auto status = bladerf_set_clock_select(_dev.get(),sel);
+    if (status != 0) {
+      BLADERF_WARNING("bladerf_set_clock_select: "
+                      << bladerf_strerror(status));
+    }
+}
+
+void bladerf_common::init_output_clock(bool enable)
+{
+    auto status = bladerf_set_clock_output(_dev.get(), enable);
+    if (status != 0) {
+      BLADERF_WARNING("bladerf_set_clock_output: "
+                      << bladerf_strerror(status));
+    }
+}
+
+void bladerf_common::init_dac(uint16_t dac)
+{
+    auto status = bladerf_trim_dac_write(_dev.get(), dac);
+    if (status != 0) {
+      BLADERF_WARNING("bladerf_trim_dac_write: "
+                      << bladerf_strerror(status));
+    }
+    else
+    {
+        status = bladerf_trim_dac_read(_dev.get(), &dac);
+        if (status != 0) {
+          BLADERF_WARNING("bladerf_trim_dac_read: "
+                          << bladerf_strerror(status));
+        }
+        else
+        {
+            BLADERF_INFO("trim dac value: " << dac);
         }
     }
 }

@@ -179,7 +179,7 @@ blocks:
     comment: ''
     corr0: '0'
     corr1: '0'
-    dac: '10000'
+    dac: '8000'
     dc_offset_mode0: '0'
     dc_offset_mode1: '0'
     device_id: '0'
@@ -201,11 +201,17 @@ blocks:
     nchan: '1'
     out_clk: 'False'
     power_monitoring: Enable
-    ref_clk: '1000000'
+    ref_clk: '0'
     sample_rate: samp_rate
+    trigger0: 'False'
+    trigger1: 'False'
+    trigger_role0: master
+    trigger_role1: master
+    trigger_signal0: J51_1
+    trigger_signal1: J51_1
     type: fc32
     verbosity: warning
-    xb200: auto3db
+    xb200: none
   states:
     bus_sink: false
     bus_source: false

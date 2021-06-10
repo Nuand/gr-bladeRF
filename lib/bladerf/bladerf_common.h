@@ -165,7 +165,9 @@ protected:
 
   void init_xb200(const std::string & filter, bladerf_direction direction);
   void init_refclk(int freq);
-
+  void init_input_clock(const std::string & clock_selection);
+  void init_output_clock(bool enable);
+  void init_dac(uint16_t dac);
 
   void set_channel_enable(bladerf_channel ch, bool enable);
   bool get_channel_enable(bladerf_channel ch);
