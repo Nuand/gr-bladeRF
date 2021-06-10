@@ -175,7 +175,7 @@ templates:
              + ",fpga=" + str(${'$'}{fpga_image})
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
              + ",power_monitoring=" + '${'$'}{power_monitoring}'
-             + ",ref_clk=" + str(${'$'}{ref_clk})
+             + ",ref_clk=" + str(int(${'$'}{ref_clk}))
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})
              + ",dac=" + str(${'$'}{dac})

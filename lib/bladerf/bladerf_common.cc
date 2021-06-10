@@ -259,6 +259,12 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       {
           init_refclk(freq);
       }
+      else
+      {
+          if (dict.count("dac")) {
+              init_dac(boost::lexical_cast<uint16_t>(_get(dict, "dac")));
+          }
+      }
   }
 
   if (dict.count("in_clk")) {
@@ -269,9 +275,7 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       init_output_clock(_get(dict, "out_clk") == "True");
   }
 
-  if (dict.count("dac")) {
-      init_dac(boost::lexical_cast<uint16_t>(_get(dict, "dac")));
-  }
+
 
 
   /* Show some info about the device we've opened */
