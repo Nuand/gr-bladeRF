@@ -281,6 +281,15 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
     }
   }
 
+  if(dict.count("ref_clk"))
+  {
+      auto freq = boost::lexical_cast<int>(_get(dict,"ref_clk"));
+      if(freq)
+      {
+          init_refclk(freq);
+      }
+  }
+
   /* Show some info about the device we've opened */
   print_device_info();
 
@@ -419,6 +428,37 @@ size_t bladerf_common::get_max_channels(bladerf_direction direction)
 #else
   return bladerf_get_channel_count(_dev.get(), direction);
 #endif
+}
+
+void bladerf_common::init_refclk(int freq)
+{
+    const bladerf_range * range = nullptr;
+    auto status = bladerf_get_pll_refclk_range(_dev.get(),&range);
+    if (status != 0) {
+      BLADERF_WARNING("bladerf_get_pll_refclk_range: "
+                      << bladerf_strerror(status));
+    }
+    if (freq < range->min || freq > range->max)
+    {
+        BLADERF_WARNING(freq <<" not in ref_clk range("
+                        << range->min << " - "<< range->max <<")");
+    }
+    else
+    {
+        status = bladerf_set_pll_enable(_dev.get(), true);
+        if (status != 0) {
+          BLADERF_WARNING("bladerf_set_pll_enable: "
+                          << bladerf_strerror(status));
+        }
+        else
+        {
+            status = bladerf_set_pll_refclk(_dev.get(), freq);
+            if (status != 0) {
+              BLADERF_WARNING("bladerf_set_pll_refclk: "
+                              << bladerf_strerror(status));
+            }
+        }
+    }
 }
 
 void bladerf_common::set_channel_enable(bladerf_channel ch, bool enable)
