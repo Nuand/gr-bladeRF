@@ -275,6 +275,29 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       init_output_clock(_get(dict, "out_clk") == "True");
   }
 
+  size_t numchan = boost::lexical_cast<size_t>(_get(dict, "numchan"));
+  for(size_t i = 0; i < numchan; ++ i)
+  {
+      bladerf_channel ch = (direction == BLADERF_RX) ? BLADERF_CHANNEL_RX(i)
+                                                     : BLADERF_CHANNEL_TX(i);
+      auto ch_label = [i](const std::string &label)
+      {
+          return label + std::to_string(i);
+
+      };
+      if(dict.count(ch_label("bias_tee")))
+      {
+          auto status = bladerf_set_bias_tee(_dev.get(), ch, _get(dict, ch_label("bias_tee")) == "True");
+          if (status != 0) {
+            BLADERF_WARNING("bladerf_set_bias_tee: "
+                            << bladerf_strerror(status));
+          }
+      }
+  }
+
+
+
+
 
 
 

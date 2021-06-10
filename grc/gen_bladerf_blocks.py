@@ -186,6 +186,8 @@ templates:
              + ",trigger1="+'${'$'}{trigger1}'
              + ",trigger_role1="+'${'$'}{trigger_role1}'
              + ",trigger_signal1="+'${'$'}{trigger_signal1}'
+             + ",bias_tee0="+'${'$'}{bias_tee0}'
+             + ",bias_tee1="+'${'$'}{bias_tee1}'
              
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
