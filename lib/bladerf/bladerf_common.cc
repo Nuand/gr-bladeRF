@@ -311,7 +311,7 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
     _stream_timeout = boost::lexical_cast<unsigned int>(_get(dict, "stream_timeout_ms"));
   }
 
-  if (dict.count("enable_metadata") > 0) {
+  if (dict.count("metadata") && _get(dict, "metadata") == "True") {
     _format = BLADERF_FORMAT_SC16_Q11_META;
   }
 

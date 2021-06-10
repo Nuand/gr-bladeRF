@@ -34,6 +34,13 @@ parameters:
       type: [fc32]
   hide: part
   
+- id: metadata
+  label: Metadata
+  dtype: enum
+  default: auto
+  options: ['False', 'True']
+  hide: part
+  
 - id: device_id
   label: 'Device'
   dtype: string
@@ -162,6 +169,7 @@ templates:
     bladeRF.${sourk}(
         args="numchan=" + str(${'$'}{nchan})
              + ",type=" + '${'$'}{type}'
+             + ",metadata=" + '${'$'}{metadata}'
              + ",bladerf=" +  str(${'$'}{device_id})
              + ",verbosity=" + '${'$'}{verbosity}'
              + ",fpga=" + str(${'$'}{fpga_image})
