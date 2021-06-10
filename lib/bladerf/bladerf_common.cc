@@ -242,43 +242,15 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
     }
   }
 
-
-
   if (bladerf_is_fpga_configured(_dev.get()) != 1) {
     BLADERF_THROW("The FPGA is not configured! Provide device argument "
                   "fpga=/path/to/the/bitstream.rbf to load it.");
   }
 
   /* XB-200 Transverter Board */
-  if (dict.count("xb200")) {
-    status = bladerf_expansion_attach(_dev.get(), BLADERF_XB_200);
-    if (status != 0) {
-      BLADERF_WARNING("Could not attach XB-200: " << bladerf_strerror(status));
-    } else {
-      bladerf_xb200_filter filter = BLADERF_XB200_AUTO_1DB;
+  if (dict.count("xb200") && _get(dict, "xb200") != "none") {
+      init_xb200(_get(dict, "xb200"), direction);
 
-      if (_get(dict, "xb200") == "custom") {
-        filter = BLADERF_XB200_CUSTOM;
-      } else if (_get(dict, "xb200") == "50M") {
-        filter = BLADERF_XB200_50M;
-      } else if (_get(dict, "xb200") == "144M") {
-        filter = BLADERF_XB200_144M;
-      } else if (_get(dict, "xb200") == "222M") {
-        filter = BLADERF_XB200_222M;
-      } else if (_get(dict, "xb200") == "auto3db") {
-        filter = BLADERF_XB200_AUTO_3DB;
-      } else if (_get(dict, "xb200") == "auto") {
-        filter = BLADERF_XB200_AUTO_1DB;
-      } else {
-        filter = BLADERF_XB200_AUTO_1DB;
-      }
-
-      status = bladerf_xb200_set_filterbank(_dev.get(), direction, filter);
-      if (status != 0) {
-        BLADERF_WARNING("Could not set XB-200 filter: "
-                        << bladerf_strerror(status));
-      }
-    }
   }
 
   if(dict.count("ref_clk"))
@@ -428,6 +400,38 @@ size_t bladerf_common::get_max_channels(bladerf_direction direction)
 #else
   return bladerf_get_channel_count(_dev.get(), direction);
 #endif
+}
+
+void bladerf_common::init_xb200(const std::string &filter_name, bladerf_direction direction)
+{
+    auto status = bladerf_expansion_attach(_dev.get(), BLADERF_XB_200);
+    if (status != 0) {
+        BLADERF_WARNING("Could not attach XB-200: " << bladerf_strerror(status));
+    } else {
+        bladerf_xb200_filter filter = BLADERF_XB200_AUTO_1DB;
+
+        if (filter_name == "custom") {
+            filter = BLADERF_XB200_CUSTOM;
+        } else if (filter_name == "50M") {
+            filter = BLADERF_XB200_50M;
+        } else if (filter_name == "144M") {
+            filter = BLADERF_XB200_144M;
+        } else if (filter_name== "222M") {
+            filter = BLADERF_XB200_222M;
+        } else if (filter_name == "auto3db") {
+            filter = BLADERF_XB200_AUTO_3DB;
+        } else if (filter_name == "auto") {
+            filter = BLADERF_XB200_AUTO_1DB;
+        } else {
+            filter = BLADERF_XB200_AUTO_1DB;
+        }
+
+        status = bladerf_xb200_set_filterbank(_dev.get(), direction, filter);
+        if (status != 0) {
+        BLADERF_WARNING("Could not set XB-200 filter: "
+                        << bladerf_strerror(status));
+        }
+    }
 }
 
 void bladerf_common::init_refclk(int freq)

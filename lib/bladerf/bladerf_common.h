@@ -163,7 +163,9 @@ protected:
   /* Get the maximum number of channels supported in a given direction */
   size_t get_max_channels(bladerf_direction direction);
 
+  void init_xb200(const std::string & filter, bladerf_direction direction);
   void init_refclk(int freq);
+
 
   void set_channel_enable(bladerf_channel ch, bool enable);
   bool get_channel_enable(bladerf_channel ch);

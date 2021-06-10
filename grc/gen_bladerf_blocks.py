@@ -110,9 +110,9 @@ parameters:
   category: Advanced
   label: 'XB-200'
   dtype: enum
-  default: auto
-  options: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
-  option_labels: ['auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  default: 'none'
+  options: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  option_labels: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
   
 
   
