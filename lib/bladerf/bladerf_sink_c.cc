@@ -91,11 +91,6 @@ bladerf_sink_c::bladerf_sink_c(const std::string &args) :
                     "and will have no effect.");
   }
 
-  /* Bias tee */
-  if (dict.count("biastee")) {
-    set_biastee_mode(dict["biastee"]);
-  }
-
   /* Initialize channel <-> antenna map */
   for (std::string ant : get_antennas()) {
     _chanmap[str2channel(ant)] = -1;

@@ -287,10 +287,13 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       };
       if(dict.count(ch_label("bias_tee")))
       {
-          auto status = bladerf_set_bias_tee(_dev.get(), ch, _get(dict, ch_label("bias_tee")) == "True");
-          if (status != 0) {
-            BLADERF_WARNING("bladerf_set_bias_tee: "
-                            << bladerf_strerror(status));
+          auto status = bladerf_set_bias_tee(_dev.get(), ch,
+                                             _get(dict, ch_label("bias_tee")) == "True");
+          if (BLADERF_ERR_UNSUPPORTED == status) {
+            // unsupported, but not worth crashing out
+            BLADERF_WARNING("Bias-tee not supported by device");
+          } else if (status != 0) {
+            BLADERF_THROW_STATUS(status, "Failed to set bias-tee");
           }
       }
   }

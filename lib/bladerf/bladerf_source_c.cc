@@ -102,11 +102,6 @@ bladerf_source_c::bladerf_source_c(const std::string &args) :
     }
   }
 
-  /* Bias tee */
-  if (dict.count("biastee")) {
-    set_biastee_mode(dict["biastee"]);
-  }
-
   /* Loopback */
   set_loopback_mode(dict.count("loopback") ? dict["loopback"] : "none");
 
