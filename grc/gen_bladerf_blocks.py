@@ -136,10 +136,6 @@ inputs:
   id: pmic_in
   optional: true
   
-- domain: message
-  id: fire
-  optional: true
-  
 % if sourk == 'source':
 outputs:
 

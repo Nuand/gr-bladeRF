@@ -185,7 +185,10 @@ protected:
       return value;
   }
 
-  void setup_trigger(bladerf_channel ch, bladerf_trigger_signal, bool master);
+  void setup_trigger(bladerf_channel ch, bladerf_trigger_signal signal,
+                     bladerf_trigger_role role);
+  void disable_triggers();
+
   void fire_trigger();
 
 

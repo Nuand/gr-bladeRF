@@ -12,7 +12,6 @@ public:
    }
    void setup_message_ports()
    {
-        message_port_register_hier_in(pmt::mp("fire"));
         message_port_register_hier_in(pmt::mp("pmic_in"));
         message_port_register_hier_out(pmt::mp("pmic_out"));
 
@@ -20,7 +19,6 @@ public:
    template<typename T>
    void setup_device_connects(T device)
    {
-   	msg_connect(self(), pmt::mp("fire"), device, pmt::mp("fire"));
         msg_connect(self(), pmt::mp("pmic_in"), device, pmt::mp("pmic_in"));
         msg_connect(device,pmt::mp("pmic_out"), self(), pmt::mp("pmic_out"));
    }

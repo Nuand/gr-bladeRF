@@ -241,12 +241,13 @@ bool bladerf_source_c::start()
   _32fcbuf = reinterpret_cast<gr_complex *>(volk_malloc(_samples_per_buffer*sizeof(gr_complex), alignment));
 
   _running = true;
-
+  fire_trigger();
   return true;
 }
 
 bool bladerf_source_c::stop()
 {
+  disable_triggers();
   int status;
 
   BLADERF_DEBUG("stopping source");

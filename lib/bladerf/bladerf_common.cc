@@ -130,6 +130,30 @@ size_t num_streams(bladerf_channel_layout layout)
 #endif
 }
 
+bladerf_trigger_signal get_signal(const std::string & name)
+{
+    const std::vector<std::pair<std::string, bladerf_trigger_signal>> signals
+    {
+        {"J71_4",BLADERF_TRIGGER_J71_4},
+        {"J51_1",BLADERF_TRIGGER_J51_1},
+        {"MINI_EXP_1",BLADERF_TRIGGER_MINI_EXP_1},
+        {"USER_0",BLADERF_TRIGGER_USER_0},
+        {"USER_1",BLADERF_TRIGGER_USER_1},
+        {"USER_2",BLADERF_TRIGGER_USER_2},
+        {"USER_3",BLADERF_TRIGGER_USER_3},
+        {"USER_4",BLADERF_TRIGGER_USER_4},
+        {"USER_5",BLADERF_TRIGGER_USER_5},
+        {"USER_6",BLADERF_TRIGGER_USER_6},
+        {"USER_7",BLADERF_TRIGGER_USER_7},
+    };
+    for(const auto & s: signals)
+    {
+        if(s.first == name)
+            return s.second;
+    }
+    return BLADERF_TRIGGER_INVALID;
+}
+
 /******************************************************************************
  * Public methods
  ******************************************************************************/
@@ -296,13 +320,16 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
             BLADERF_THROW_STATUS(status, "Failed to set bias-tee");
           }
       }
+      auto ch_trigger = ch_label("trigger");
+      if(dict.count(ch_trigger) && _get(dict, ch_trigger) == "True")
+      {
+         auto role = _get(dict, ch_label("trigger_role")) == "master"
+                 ? BLADERF_TRIGGER_ROLE_MASTER : BLADERF_TRIGGER_ROLE_SLAVE;
+         auto signal = get_signal(_get(dict, ch_label("trigger_signal")));
+         setup_trigger(ch,signal,role);
+      }
+
   }
-
-
-
-
-
-
 
   /* Show some info about the device we've opened */
   print_device_info();
@@ -592,17 +619,29 @@ std::string bladerf_common::get_pmic_value(const std::string &reg_name)
 
 }
 
-void bladerf_common::setup_trigger(bladerf_channel ch, bladerf_trigger_signal signal, bool master)
+void bladerf_common::setup_trigger(bladerf_channel ch, bladerf_trigger_signal signal,
+                                                     bladerf_trigger_role role)
 {
     auto status = bladerf_trigger_init(_dev.get(), ch, signal, &_triggers[ch]);
     if (status != 0) {
       BLADERF_THROW_STATUS(status, "bladerf_trigger_init failed");
     }
-    _triggers[ch].role  = master ? BLADERF_TRIGGER_ROLE_MASTER : BLADERF_TRIGGER_ROLE_SLAVE;
+    _triggers[ch].role  = role;
     // Arm the triggering functionality
     status = bladerf_trigger_arm(_dev.get(), &_triggers[ch], true, 0, 0);
     if (status != 0) {
       BLADERF_THROW_STATUS(status, "bladerf_trigger_arm failed");
+    }
+}
+
+void bladerf_common::disable_triggers()
+{
+    for(auto & trigger: _triggers)
+    {
+        auto status = bladerf_trigger_arm(_dev.get(), &trigger.second, false, 0, 0);
+        if (status != 0) {
+            BLADERF_THROW_STATUS(status, "bladerf_trigger_arm failed");
+        }
     }
 }
 

@@ -177,7 +177,7 @@ bool bladerf_sink_c::start()
       }
     }
   }
-
+  fire_trigger();
   /* Allocate memory for conversions in work() */
   size_t alignment = volk_get_alignment();
 
@@ -213,7 +213,7 @@ bool bladerf_sink_c::stop()
       }
     }
   }
-
+  disable_triggers();
   /* Deallocate conversion memory */
   volk_free(_16icbuf);
   volk_free(_32fcbuf);
