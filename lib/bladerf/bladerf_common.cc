@@ -315,13 +315,6 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       }
   }
 
-  if (dict.count("in_clk")) {
-      init_input_clock(_get(dict, "in_clk"));
-  }
-
-  if (dict.count("out_clk")) {
-      init_output_clock(_get(dict, "out_clk") == "True");
-  }
 
   size_t numchan = boost::lexical_cast<size_t>(_get(dict, "numchan"));
   for(size_t i = 0; i < numchan; ++ i)
@@ -333,17 +326,6 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
           return label + std::to_string(i);
 
       };
-      if(dict.count(ch_label("bias_tee")))
-      {
-          auto status = bladerf_set_bias_tee(_dev.get(), ch,
-                                             _get(dict, ch_label("bias_tee")) == "True");
-          if (BLADERF_ERR_UNSUPPORTED == status) {
-            // unsupported, but not worth crashing out
-            BLADERF_WARNING("Bias-tee not supported by device");
-          } else if (status != 0) {
-            BLADERF_THROW_STATUS(status, "Failed to set bias-tee");
-          }
-      }
       auto ch_trigger = ch_label("trigger");
       if(dict.count(ch_trigger) && _get(dict, ch_trigger) == "True")
       {
@@ -352,18 +334,10 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
          auto signal = get_signal(_get(dict, ch_label("trigger_signal")));
          setup_trigger(ch,signal,role);
       }
-
   }
 
   /* Show some info about the device we've opened */
   print_device_info();
-
-
-
-
-
-
-
   /* Initialize buffer and sample configuration */
   if (dict.count("buffers")) {
     _num_buffers = boost::lexical_cast<size_t>(_get(dict, "buffers"));
@@ -471,6 +445,36 @@ void bladerf_common::init_bladerf1(const dict_t &dict, bladerf_direction directi
 
 void bladerf_common::init_bladerf2(const dict_t &dict, bladerf_direction direction)
 {
+    if (dict.count("in_clk")) {
+        init_input_clock(_get(dict, "in_clk"));
+    }
+
+    if (dict.count("out_clk")) {
+        init_output_clock(_get(dict, "out_clk") == "True");
+    }
+
+    size_t numchan = boost::lexical_cast<size_t>(_get(dict, "numchan"));
+    for(size_t i = 0; i < numchan; ++ i)
+    {
+        bladerf_channel ch = (direction == BLADERF_RX) ? BLADERF_CHANNEL_RX(i)
+                                                       : BLADERF_CHANNEL_TX(i);
+        auto ch_label = [i](const std::string &label)
+        {
+            return label + std::to_string(i);
+
+        };
+        if(dict.count(ch_label("bias_tee")))
+        {
+            auto status = bladerf_set_bias_tee(_dev.get(), ch,
+                                               _get(dict, ch_label("bias_tee")) == "True");
+            if (BLADERF_ERR_UNSUPPORTED == status) {
+              // unsupported, but not worth crashing out
+              BLADERF_WARNING("Bias-tee not supported by device");
+            } else if (status != 0) {
+              BLADERF_THROW_STATUS(status, "Failed to set bias-tee");
+            }
+        }
+    }
 
 }
 
