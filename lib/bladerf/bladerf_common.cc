@@ -362,11 +362,7 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
 
 
 
-  if (dict.count("smb")) {
-    set_smb_frequency(boost::lexical_cast<double>(_get(dict, "smb")));
-    BLADERF_INFO(boost::str(boost::format("SMB frequency set to %f Hz")
-                  % get_smb_frequency()));
-  }
+
 
   /* Initialize buffer and sample configuration */
   if (dict.count("buffers")) {
@@ -462,6 +458,13 @@ void bladerf_common::init_bladerf1(const dict_t &dict, bladerf_direction directi
                 ? BLADERF_LPF_BYPASSED : BLADERF_LPF_DISABLED;
         set_lpf_mode(ch, mode);
     }
+    if (dict.count("smb")) {
+        set_smb_frequency(boost::lexical_cast<double>(_get(dict, "smb")));
+        BLADERF_INFO(boost::str(boost::format("SMB frequency set to %f Hz")
+                      % get_smb_frequency()));
+    }
+
+
 
 
 }

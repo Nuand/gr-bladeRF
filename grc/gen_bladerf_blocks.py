@@ -149,6 +149,13 @@ parameters:
   option_labels: ['Disabled', 'Bypassed'] 
   hide: part
   
+- id: smb
+  label: 'SMB frequency'
+  category: x40/x115
+  dtype: real
+  default: 0
+  hide: part  
+  
 - id: dc_calibration
   label: 'DC calibration'
   category: x40/x115
@@ -215,6 +222,7 @@ templates:
              + ",tamer=" + '${'$'}{tamer}'
              + ",sampling=" + '${'$'}{sampling}'
              + ",lpf_mode="+'${'$'}{lpf_mode}'
+             + ",smb="+str(int(${'$'}{smb}))
              + ",dc_calibration="+'${'$'}{dc_calibration}'
              + ",trigger0="+'${'$'}{trigger0}'
              + ",trigger_role0="+'${'$'}{trigger_role0}'
