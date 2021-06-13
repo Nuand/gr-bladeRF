@@ -120,6 +120,7 @@ parameters:
   default: 'none'
   options: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
   option_labels: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
+  hide: part
 
 - id: tamer
   category: x40/x115
@@ -128,6 +129,16 @@ parameters:
   default: 'internal'
   options: ['internal','external_1pps', 'external']
   option_labels: ['Internal','External 1pps', 'External 10 MHz']
+  hide: part
+  
+- id: lpf_mode
+  label: 'LPF mode'
+  category: x40/x115
+  dtype: enum
+  default: 'disabled'
+  options: ['disabled', 'bypassed']
+  option_labels: ['Disabled', 'Bypassed'] 
+  hide: part
   
 
   
@@ -185,6 +196,7 @@ templates:
              + ",dac=" + str(${'$'}{dac})
              + ",xb200=" + '${'$'}{xb200}'
              + ",tamer=" + '${'$'}{tamer}'
+             + ",lpf_mode="+'${'$'}{lpf_mode}'
              + ",trigger0="+'${'$'}{trigger0}'
              + ",trigger_role0="+'${'$'}{trigger_role0}'
              + ",trigger_signal0="+'${'$'}{trigger_signal0}'
@@ -193,6 +205,7 @@ templates:
              + ",trigger_signal1="+'${'$'}{trigger_signal1}'
              + ",bias_tee0="+'${'$'}{bias_tee0}'
              + ",bias_tee1="+'${'$'}{bias_tee1}'
+             
              
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
@@ -411,6 +424,8 @@ PARAMS_TMPL = """
   options: ['J71_4', 'J51_1', 'MINI_EXP_1', 'USER_0', 'USER_1', 'USER_2', 'USER_3', 'USER_4', 'USER_5', 'USER_6', 'USER_7']
   option_labels: ['J71_4', 'J51_1', 'MINI_EXP_1', 'USER_0', 'USER_1', 'USER_2', 'USER_3', 'USER_4', 'USER_5', 'USER_6', 'USER_7'] 
   hide: ${'$'}{ 'part' if (nchan > ${n})  else 'all'} 
+  
+
   
 """
 

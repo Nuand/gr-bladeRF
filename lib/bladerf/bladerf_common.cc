@@ -418,6 +418,15 @@ void bladerf_common::init_bladerf1(const dict_t &dict, bladerf_direction directi
     if (dict.count("tamer")) {
         set_clock_source(_get(dict, "tamer"));
     }
+    bladerf_channel ch = (direction == BLADERF_RX) ? BLADERF_CHANNEL_RX(0)
+                                                   : BLADERF_CHANNEL_TX(0);
+    if (dict.count("lpf_mode")) {
+        bladerf_lpf_mode mode = _get(dict, "lpf_mode") == "bypassed"
+                ? BLADERF_LPF_BYPASSED : BLADERF_LPF_DISABLED;
+        set_lpf_mode(ch, mode);
+    }
+
+
 }
 
 void bladerf_common::init_bladerf2(const dict_t &dict, bladerf_direction direction)
@@ -1317,6 +1326,15 @@ double bladerf_common::get_smb_frequency()
   }
 
   return static_cast<double>(actual_frequency);
+}
+
+void bladerf_common::set_lpf_mode(bladerf_channel ch, bladerf_lpf_mode mode)
+{
+    auto status = bladerf_set_lpf_mode(_dev.get(), ch, mode);
+    if(status != 0)
+    {
+        BLADERF_THROW_STATUS(status, "Failed to set LPF mode");
+    }
 }
 
 /******************************************************************************

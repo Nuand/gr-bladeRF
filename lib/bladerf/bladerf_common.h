@@ -273,6 +273,9 @@ protected:
   /* Get the current SMB frequency */
   double get_smb_frequency();
 
+  void set_lpf_mode(bladerf_channel ch,  bladerf_lpf_mode mode);
+
+
   /*****************************************************************************
    * Protected members
    ****************************************************************************/
