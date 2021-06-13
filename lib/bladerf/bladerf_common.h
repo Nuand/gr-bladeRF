@@ -156,6 +156,9 @@ protected:
    */
   void init(dict_t const &dict, bladerf_direction direction);
 
+  void init_bladerf1(dict_t const &dict, bladerf_direction direction);
+  void init_bladerf2(dict_t const &dict, bladerf_direction direction);
+
   /* Get a vector of available devices */
   static std::vector<std::string> devices();
   /* Get the type of the open bladeRF board */

@@ -114,12 +114,20 @@ parameters:
   default: 10000
 
 - id: xb200
-  category: Advanced
+  category: x40/x115
   label: 'XB-200'
   dtype: enum
   default: 'none'
   options: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
   option_labels: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
+
+- id: tamer
+  category: x40/x115
+  label: 'Tamer'
+  dtype: enum
+  default: 'internal'
+  options: ['internal','external_1pps', 'external']
+  option_labels: ['Internal','External 1pps', 'External 10 MHz']
   
 
   
@@ -176,6 +184,7 @@ templates:
              + ",out_clk=" + str(${'$'}{out_clk})
              + ",dac=" + str(${'$'}{dac})
              + ",xb200=" + '${'$'}{xb200}'
+             + ",tamer=" + '${'$'}{tamer}'
              + ",trigger0="+'${'$'}{trigger0}'
              + ",trigger_role0="+'${'$'}{trigger_role0}'
              + ",trigger_signal0="+'${'$'}{trigger_signal0}'

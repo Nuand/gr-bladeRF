@@ -271,10 +271,16 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
                   "fpga=/path/to/the/bitstream.rbf to load it.");
   }
 
-  if (dict.count("xb200") && _get(dict, "xb200") != "none") {
-      init_xb200(_get(dict, "xb200"), direction);
-
+  if(get_board_type() == BOARD_TYPE_BLADERF_1)
+  {
+      init_bladerf1(dict, direction);
   }
+  if(get_board_type() == BOARD_TYPE_BLADERF_2)
+  {
+      init_bladerf2(dict, direction);
+  }
+
+
 
   if(dict.count("ref_clk"))
   {
@@ -334,11 +340,7 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
   /* Show some info about the device we've opened */
   print_device_info();
 
-  if (dict.count("tamer")) {
-    set_clock_source(_get(dict, "tamer"));
-    BLADERF_INFO(boost::str(boost::format("Tamer mode set to '%s'")
-                  % get_clock_source()));
-  }
+
 
 
 
@@ -405,7 +407,22 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
                 "%d, active transfers: %d")
                 % _num_buffers
                 % _samples_per_buffer
-                % _num_transfers));
+                          % _num_transfers));
+}
+
+void bladerf_common::init_bladerf1(const dict_t &dict, bladerf_direction direction)
+{
+    if (dict.count("xb200") && _get(dict, "xb200") != "none") {
+        init_xb200(_get(dict, "xb200"), direction);
+    }
+    if (dict.count("tamer")) {
+        set_clock_source(_get(dict, "tamer"));
+    }
+}
+
+void bladerf_common::init_bladerf2(const dict_t &dict, bladerf_direction direction)
+{
+
 }
 
 std::vector<std::string> bladerf_common::devices()
