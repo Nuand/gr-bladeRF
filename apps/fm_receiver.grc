@@ -65,6 +65,27 @@ blocks:
     coordinate: [568, 12.0]
     rotation: 0
     state: true
+- name: if_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: IF gain
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '50'
+    value: '20'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [968, 12.0]
+    rotation: 0
+    state: true
 - name: power
   id: variable_qtgui_label
   parameters:
@@ -79,6 +100,27 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [456, 12.0]
+    rotation: 0
+    state: true
+- name: rf_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: RF gain
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '60'
+    value: '60'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [840, 12.0]
     rotation: 0
     state: true
 - name: samp_rate
@@ -145,7 +187,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 204.0]
+    coordinate: [568, 132.0]
     rotation: 0
     state: true
 - name: audio_sink_0
@@ -162,7 +204,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [944, 204.0]
+    coordinate: [920, 188.0]
     rotation: 0
     state: true
 - name: bladeRF_source_0
@@ -170,46 +212,48 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bb_gain0: '20'
-    bb_gain1: '20'
     bias_tee0: 'False'
     bias_tee1: 'False'
-    bw0: '500000'
+    bw0: samp_rate
     bw1: '200000'
     comment: ''
     corr0: '0'
     corr1: '0'
     dac: '8000'
+    dc_calibration: RX_LPF
     dc_offset_mode0: '0'
     dc_offset_mode1: '0'
     device_id: '0'
     fpga_image: test123
-    fpga_reload: 'True'
+    fpga_reload: 'False'
     freq0: freq
     freq1: 1e8
-    gain0: '10'
+    gain0: rf_gain
     gain1: '10'
     gain_mode0: 'False'
     gain_mode1: 'False'
-    if_gain0: '20'
+    if_gain0: if_gain
     if_gain1: '20'
     in_clk: ONBOARD
     iq_balance_mode0: '0'
     iq_balance_mode1: '0'
+    lpf_mode: bypassed
     maxoutbuf: '0'
+    metadata: 'True'
     minoutbuf: '0'
     nchan: '1'
     out_clk: 'False'
-    power_monitoring: Enable
-    ref_clk: '0'
+    ref_clk: 10e6
     sample_rate: samp_rate
-    trigger0: 'False'
+    sampling: external
+    smb: 10e6
+    tamer: internal
+    trigger0: 'True'
     trigger1: 'False'
     trigger_role0: master
     trigger_role1: master
-    trigger_signal0: J51_1
+    trigger_signal0: J71_4
     trigger_signal1: J51_1
-    type: fc32
     verbosity: warning
     xb200: none
   states:
@@ -233,7 +277,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [88, 540.0]
+    coordinate: [56, 460.0]
     rotation: 0
     state: true
 - name: blocks_msgpair_to_var_0
@@ -247,7 +291,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 140.0]
+    coordinate: [328, 316.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0
@@ -265,7 +309,88 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [776, 300.0]
+    coordinate: [760, 148.0]
+    rotation: 0
+    state: true
+- name: qtgui_freq_sink_x_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: Relative Gain
+    label1: ''
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'False'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [632, 340.0]
     rotation: 0
     state: true
 - name: rational_resampler_xxx_0
@@ -285,12 +410,13 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 228.0]
+    coordinate: [376, 140.0]
     rotation: 0
     state: true
 
 connections:
 - [analog_fm_demod_cf_0, '0', blocks_multiply_const_vxx_0, '0']
+- [bladeRF_source_0, '0', qtgui_freq_sink_x_0, '0']
 - [bladeRF_source_0, '0', rational_resampler_xxx_0, '0']
 - [bladeRF_source_0, pmic_out, blocks_msgpair_to_var_0, inpair]
 - [blocks_message_strobe_0, strobe, bladeRF_source_0, pmic_in]
