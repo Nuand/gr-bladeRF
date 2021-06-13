@@ -130,9 +130,21 @@ size_t num_streams(bladerf_channel_layout layout)
 #endif
 }
 
+template<typename T>
+T get_enum_value(const std::vector<std::pair<std::string, T>> & values,
+                 const std::string& name)
+{
+    for(const auto & v: values)
+    {
+        if(v.first == name)
+            return v.second;
+    }
+    return T(-1);
+}
+
 bladerf_trigger_signal get_signal(const std::string & name)
 {
-    const std::vector<std::pair<std::string, bladerf_trigger_signal>> signals
+    return get_enum_value<bladerf_trigger_signal>(
     {
         {"J71_4",BLADERF_TRIGGER_J71_4},
         {"J51_1",BLADERF_TRIGGER_J51_1},
@@ -145,14 +157,20 @@ bladerf_trigger_signal get_signal(const std::string & name)
         {"USER_5",BLADERF_TRIGGER_USER_5},
         {"USER_6",BLADERF_TRIGGER_USER_6},
         {"USER_7",BLADERF_TRIGGER_USER_7},
-    };
-    for(const auto & s: signals)
-    {
-        if(s.first == name)
-            return s.second;
-    }
-    return BLADERF_TRIGGER_INVALID;
+    }, name);
 }
+
+bladerf_cal_module get_calibrate_module(const std::string & module)
+{
+    return get_enum_value<bladerf_cal_module>(
+    {
+        {"LPF_TUNING",BLADERF_DC_CAL_LPF_TUNING},
+        {"TX_LPF",BLADERF_DC_CAL_TX_LPF},
+        {"RX_LP",BLADERF_DC_CAL_RX_LPF},
+        {"RXVGA2",BLADERF_DC_CAL_RXVGA2},
+    },module);
+}
+
 
 /******************************************************************************
  * Public methods
@@ -425,6 +443,15 @@ void bladerf_common::init_bladerf1(const dict_t &dict, bladerf_direction directi
         if(status != 0)
         {
             BLADERF_THROW_STATUS(status, "Failed to set sampling");
+        }
+    }
+
+    if (dict.count("dc_calibration")) {
+        bladerf_cal_module module = get_calibrate_module( _get(dict, "dc_calibration"));
+        auto status = bladerf_calibrate_dc(_dev.get(), module);
+        if(status != 0)
+        {
+            BLADERF_THROW_STATUS(status, "Failed to calibrate");
         }
     }
 

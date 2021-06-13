@@ -149,6 +149,14 @@ parameters:
   option_labels: ['Disabled', 'Bypassed'] 
   hide: part
   
+- id: dc_calibration
+  label: 'DC calibration'
+  category: x40/x115
+  dtype: enum
+  default: 'LPF_TUNING'
+  options: ['LPF_TUNING', 'TX_LPF', 'RX_LPF', 'RXVGA2']
+  hide: part
+  
 
   
 
@@ -207,6 +215,7 @@ templates:
              + ",tamer=" + '${'$'}{tamer}'
              + ",sampling=" + '${'$'}{sampling}'
              + ",lpf_mode="+'${'$'}{lpf_mode}'
+             + ",dc_calibration="+'${'$'}{dc_calibration}'
              + ",trigger0="+'${'$'}{trigger0}'
              + ",trigger_role0="+'${'$'}{trigger_role0}'
              + ",trigger_signal0="+'${'$'}{trigger_signal0}'
