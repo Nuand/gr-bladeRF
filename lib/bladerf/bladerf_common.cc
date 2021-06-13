@@ -418,6 +418,16 @@ void bladerf_common::init_bladerf1(const dict_t &dict, bladerf_direction directi
     if (dict.count("tamer")) {
         set_clock_source(_get(dict, "tamer"));
     }
+    if (dict.count("sampling")) {
+        bladerf_sampling mode = _get(dict, "sampling") == "external" ?
+                    BLADERF_SAMPLING_EXTERNAL: BLADERF_SAMPLING_INTERNAL;
+        auto status = bladerf_set_sampling(_dev.get(), mode);
+        if(status != 0)
+        {
+            BLADERF_THROW_STATUS(status, "Failed to set sampling");
+        }
+    }
+
     bladerf_channel ch = (direction == BLADERF_RX) ? BLADERF_CHANNEL_RX(0)
                                                    : BLADERF_CHANNEL_TX(0);
     if (dict.count("lpf_mode")) {

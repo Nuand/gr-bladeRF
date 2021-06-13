@@ -131,6 +131,15 @@ parameters:
   option_labels: ['Internal','External 1pps', 'External 10 MHz']
   hide: part
   
+- id: sampling
+  category: x40/x115
+  label: 'sampling'
+  dtype: enum
+  default: 'internal'
+  options: ['internal', 'external']
+  option_labels: ['Internal','External']
+  hide: part
+  
 - id: lpf_mode
   label: 'LPF mode'
   category: x40/x115
@@ -196,6 +205,7 @@ templates:
              + ",dac=" + str(${'$'}{dac})
              + ",xb200=" + '${'$'}{xb200}'
              + ",tamer=" + '${'$'}{tamer}'
+             + ",sampling=" + '${'$'}{sampling}'
              + ",lpf_mode="+'${'$'}{lpf_mode}'
              + ",trigger0="+'${'$'}{trigger0}'
              + ",trigger_role0="+'${'$'}{trigger_role0}'
