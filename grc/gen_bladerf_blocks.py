@@ -38,9 +38,21 @@ parameters:
   dtype: string
   default: '0'
   hide: ${'$'}{ 'none' if device_id else 'part'}
+
+- id: fpga_reload
+  label: 'FPGA reload'
+  dtype: enum
+  default: auto
+  options: ['False', 'True']
+  hide: part
+  
+- id: fpga_image
+  label: 'FPGA image'
+  dtype: string
+  hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part'}  
   
 - id: nchan
-  label: 'Number Channels'
+  label: 'Num Channels'
   dtype: int
   default: 1
   options: [ ${", ".join([str(n) for n in range(1, max_nchan+1)])} ]
@@ -56,28 +68,12 @@ parameters:
   label: 'Sample Rate (sps)'
   dtype: real
   default: samp_rate
-  
-- id: fpga_reload
-  label: 'FPGA reload'
-  category: Advanced
-  dtype: enum
-  default: auto
-  options: ['False', 'True']
-  hide: part
-  
-- id: fpga_image
-  category: Advanced
-  label: 'FPGA image'
-  dtype: string
-  hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part'}  
-    
+   
 - id: ref_clk
-  category: Advanced
   label: 'Reference clock'
   dtype: real
   
 - id: in_clk
-  category: Advanced
   label: 'Input clock'
   dtype: enum
   default: auto
@@ -85,15 +81,14 @@ parameters:
   option_labels: ['Onboard', 'External']
   
 - id: out_clk
-  category: Advanced
   label: 'Output clock'
   dtype: enum
   default: False
   options: [False, True]
   option_labels: ['Disable', 'Enable']
-
+  
+  
 - id: dac
-  category: Advanced
   label: 'VCXTO DAC'
   dtype: real
   default: 10000
@@ -118,7 +113,7 @@ parameters:
   
 - id: sampling
   category: x40/x115
-  label: 'sampling'
+  label: 'Sampling'
   dtype: enum
   default: 'internal'
   options: ['internal', 'external']
@@ -149,11 +144,7 @@ parameters:
   options: ['LPF_TUNING', 'TX_LPF', 'RX_LPF', 'RXVGA2']
   hide: part
   
-
-  
-
 ${params}
-
 
 inputs:
 - domain: message
@@ -230,7 +221,6 @@ templates:
     % endif
     self.${'$'}{id}.set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     self.${'$'}{id}.set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
-    self.${'$'}{id}.set_bb_gain(${'$'}{${'bb_gain' + str(n)}}, ${n})
     self.${'$'}{id}.set_bandwidth(${'$'}{${'bw' + str(n)}}, ${n})
     ${'%'} endif
     % endfor
@@ -246,7 +236,6 @@ templates:
     % endif
     - set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     - set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
-    - set_bb_gain(${'$'}{${'bb_gain' + str(n)}}, ${n})
     - set_bandwidth(${'$'}{${'bw' + str(n)}}, ${n})
     % endfor
 
@@ -256,11 +245,23 @@ documentation: |-
   Device: 
   Device serial id. If 'device' are not specified, the first available device is used.
   
-  Fpga image:  
-  Load the FPGA bitstream from the specified file. This is required only once after powering the bladeRF on. If the FPGA is already loaded, this argument is ignored, unless 'fpga-reload=1' is specified.
+  Metadata:
+  Provide metadata with samples
   
-  Enable power monitoring:
-  Read value from Power Monitor IC
+  FPGA reload:
+  Reload reload FPGA image by 'FPGA image' path.
+  
+  FPGA image:  
+  Load the FPGA bitstream from the specified file. This is required only once after powering the bladeRF on. If the FPGA is already loaded, this argument is ignored, unless FPGA reload is True.
+  
+  Num Channels:
+  Selects the total number of channels in this multi-device configuration. Required when specifying multiple device arguments.
+
+  Verbosity:
+  Sets the filter level for displayed log messages.
+  
+  Sample Rate:
+  The sample rate is the number of samples per second output by this block on each channel.
   
   Reference clock:
   Value of reference clock
@@ -274,12 +275,28 @@ documentation: |-
   VCXTO DAC:
   Value to VCTCXO trim DAC  
   
-  Num Channels:
-  Selects the total number of channels in this multi-device configuration. Required when specifying multiple device arguments.
-
-  Sample Rate:
-  The sample rate is the number of samples per second output by this block on each channel.
-
+  x40/x115 Specific:
+    XB-200:
+    Select XB-200 filterbank.
+    
+    Tamer:
+    Select tamer mode.
+    
+    Sampling:
+    Configure the sampling of the LMS6002D to be either internal or external.
+    Internal sampling will read from the RXVGA2 driver internal to the chip. External sampling will connect the ADC inputs to the external inputs for direct sampling.
+    
+    LPF mode:
+    Set the LMS LPF mode to bypass or disable it.
+    
+    SMB frequency:
+    Set the SMB connector output frequency in Hz. This function inherently configures the SMB clock port as an output. 
+    
+    DC calibration:
+    Perform DC calibration.
+    
+  
+  For each channel:
   Frequency:
   The center frequency is the frequency the RF chain is tuned to.
 
@@ -303,8 +320,7 @@ documentation: |-
 
   Gain Mode:
   Chooses between the manual (default) and automatic gain mode where appropriate.
-  To allow manual control of RF/IF/BB gain stages, manual gain mode must be configured.
-  Currently, only RTL-SDR devices support automatic gain mode.
+  To allow manual control of RF/IF gain stages, manual gain mode must be configured.
 
   % endif
   RF Gain:
@@ -314,12 +330,17 @@ documentation: |-
   Overall intermediate frequency gain of the device.
   This setting is available for RTL-SDR and OsmoSDR devices with E4000 tuners and HackRF in receive and transmit mode. Observations lead to a reasonable gain range from 15 to 30dB.
 
-  BB Gain:
-  Overall baseband gain of the device.
-  This setting is available for HackRF in receive mode. Observations lead to a reasonable gain range from 15 to 30dB.
-
   Bandwidth:
   Set the bandpass filter on the radio frontend. To use the default (automatic) bandwidth filter setting, this should be zero.
+  
+  Use trigger:
+  Enable trigger functionality
+  
+  Trigger role:
+  Set trigger role (master/slave) for channel
+  
+  Trigger signal:
+  This selects pin or signal used for the trigger.
   
 file_format: 1
 """
@@ -334,14 +355,14 @@ file_format: 1
 PARAMS_TMPL = """
 - id: freq${n}
   category: 'Channel ${n}'
-  label: 'Center frequency (Hz)'
+  label: 'Frequency (Hz)'
   dtype: real
   default: 1e8
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
   
 - id: corr${n}
   category: 'Channel ${n}'
-  label: 'Frequency Correction (ppm)'
+  label: 'Freq. Corr. (ppm)'
   dtype: real
   default: 0
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
@@ -402,14 +423,7 @@ PARAMS_TMPL = """
   dtype: real
   default: 20
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
-  
-- id: bb_gain${n}
-  category: 'Channel ${n}'
-  label: 'BB Gain (dB)'
-  dtype: real
-  default: 20
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
-  
+
 - id: trigger${n}
   label: 'Use trigger'
   category: 'Channel ${n}' 
@@ -434,9 +448,6 @@ PARAMS_TMPL = """
   options: ['J71_4', 'J51_1', 'MINI_EXP_1', 'USER_0', 'USER_1', 'USER_2', 'USER_3', 'USER_4', 'USER_5', 'USER_6', 'USER_7']
   option_labels: ['J71_4', 'J51_1', 'MINI_EXP_1', 'USER_0', 'USER_1', 'USER_2', 'USER_3', 'USER_4', 'USER_5', 'USER_6', 'USER_7'] 
   hide: ${'$'}{ 'part' if (nchan > ${n})  else 'all'} 
-  
-
-  
 """
 
 
