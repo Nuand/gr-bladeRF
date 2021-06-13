@@ -25,14 +25,6 @@ category: '[bladeRF]'
 flags: throttle
 
 parameters:
-- id: type
-  label: '${direction.title()}put Type'
-  dtype: enum
-  options: [fc32]
-  option_labels: [Complex Float32]
-  option_attributes:
-      type: [fc32]
-  hide: part
   
 - id: metadata
   label: Metadata
@@ -79,13 +71,6 @@ parameters:
   dtype: string
   hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part'}  
     
-- id: power_monitoring
-  category: Advanced
-  label: 'Power monitoring'
-  dtype: enum
-  default: auto
-  options: ['Disable', 'Enable']
-  
 - id: ref_clk
   category: Advanced
   label: 'Reference clock'
@@ -207,13 +192,11 @@ templates:
   make: |      
     bladeRF.${sourk}(
         args="numchan=" + str(${'$'}{nchan})
-             + ",type=" + '${'$'}{type}'
              + ",metadata=" + '${'$'}{metadata}'
              + ",bladerf=" +  str(${'$'}{device_id})
              + ",verbosity=" + '${'$'}{verbosity}'
              + ",fpga=" + str(${'$'}{fpga_image})
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
-             + ",power_monitoring=" + '${'$'}{power_monitoring}'
              + ",ref_clk=" + str(int(${'$'}{ref_clk}))
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})
