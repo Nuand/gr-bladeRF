@@ -318,8 +318,8 @@ documentation: |-
     Manual: Keep last estimated correction when switched from Automatic to Manual.
     Automatic: Periodicallly find the best solution to compensate for image signals.
 
-  Gain Mode:
-  Chooses between the manual (default) and automatic gain mode where appropriate.
+  AGC:
+  Chooses between the manual (False) and automatic (True) gain mode where appropriate.
   To allow manual control of RF/IF gain stages, manual gain mode must be configured.
 
   % endif
@@ -402,11 +402,9 @@ PARAMS_TMPL = """
   
 - id: gain_mode${n}
   category: 'Channel ${n}'
-  label: 'Gain Mode'
+  label: 'AGC'
   dtype: bool
   default: False
-  options: [False, True]
-  option_labels: [Manual, Automatic]
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
 % endif
 

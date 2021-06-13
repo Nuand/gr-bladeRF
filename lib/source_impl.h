@@ -23,15 +23,11 @@ namespace gr {
 
       channel_store<double> center_freq_;
       channel_store<double> freq_corr_;
-      channel_store<bool> gain_mode_;
       channel_store<double> gain_;
       channel_store<double> if_gain_;
       channel_store<double> bb_gain_;
       channel_store<std::string> antenna_;
       channel_store<double> bandwidth_;
-
-
-
 
      public:
       source_impl(const std::string & args);

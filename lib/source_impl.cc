@@ -158,14 +158,7 @@ namespace gr {
 
     bool source_impl::set_gain_mode(bool automatic, size_t chan)
     {
-        return gain_mode_.set_if_not_equal(automatic,chan,get_num_channels(),
-                                           [this, automatic, chan]
-        {
-            bool mode = device_->set_gain_mode(automatic,chan);
-            if(!automatic)
-                device_->set_gain(gain_[chan], chan);
-            return mode;
-        });
+        return device_->set_gain_mode(automatic,chan);
     }
 
     bool source_impl::get_gain_mode(size_t chan)
