@@ -148,10 +148,6 @@ ${params}
 
 inputs:
 - domain: message
-  id: command
-  optional: true
-  
-- domain: message
   id: pmic_in
   optional: true
   
@@ -164,17 +160,11 @@ outputs:
   multiplicity: ${'$'}{nchan}
 % if sourk == 'sink':
 outputs:
-- domain: message
-  id: async_msgs
-  optional: true
 % endif
 
 - domain: message
   id: pmic_out
   optional: true
-
-
-
 
 templates:
   imports: |-

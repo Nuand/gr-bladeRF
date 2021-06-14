@@ -35,6 +35,11 @@ namespace gr {
                                      "(check the connection and/or udev rules).");
 
         device_ = make_bladerf_sink_c( args ); //todo: get by id from block args
+        for (size_t i = 0; i < device_->get_num_channels(); i++)
+        {
+            connect(self(), i, device_, i);
+        }
+
         setup_device_connects(device_);
     }
 
