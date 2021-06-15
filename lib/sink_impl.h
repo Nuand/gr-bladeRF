@@ -22,7 +22,6 @@ namespace gr {
         channel_store<std::string> antenna_;
         channel_store<double> bandwidth_;
 
-
      public:
       sink_impl(const std::string & args);
       ~sink_impl();

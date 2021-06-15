@@ -5,7 +5,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "common_hier_block.h"
 #include "source_impl.h"
 #include "arg_helpers.h"
 
@@ -21,11 +20,12 @@ namespace gr {
      * The private constructor
      */
     source_impl::source_impl(const std::string & args)
-      : common_hier_block("source",
+      : gr::hier_block2("source",
               gr::io_signature::make(0,0,0),
               args_to_io_signature(args))
     {
-        setup_message_ports();
+        message_port_register_hier_in(pmt::mp("pmic_in"));
+        message_port_register_hier_out(pmt::mp("pmic_out"));
 
         auto dev_list = bladerf_source_c::get_devices();
         if(dev_list.size() == 0)
@@ -51,7 +51,8 @@ namespace gr {
   #endif
 
         }
-        setup_device_connects(device_);
+        msg_connect(self(), pmt::mp("pmic_in"), device_, pmt::mp("pmic_in"));
+        msg_connect(device_, pmt::mp("pmic_out"), self(), pmt::mp("pmic_out"));
      }
 
     source_impl::~source_impl()
