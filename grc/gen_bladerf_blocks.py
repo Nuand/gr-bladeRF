@@ -87,11 +87,18 @@ parameters:
   options: [False, True]
   option_labels: ['Disable', 'Enable']
   
+- id: use_dac
+  label: 'Use VCXTO DAC'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: part
   
 - id: dac
   label: 'VCXTO DAC'
   dtype: real
   default: 10000
+  hide: ${'$'}{ 'none' if use_dac == 'True' else 'part'} 
 
 - id: xb200
   category: x40/x115
@@ -181,6 +188,7 @@ templates:
              + ",ref_clk=" + str(int(${'$'}{ref_clk}))
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})
+             + ",use_dac=" + '${'$'}{use_dac}'
              + ",dac=" + str(${'$'}{dac})
              + ",xb200=" + '${'$'}{xb200}'
              + ",tamer=" + '${'$'}{tamer}'

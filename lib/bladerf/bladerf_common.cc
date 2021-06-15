@@ -309,7 +309,9 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       }
       else
       {
-          if (dict.count("dac")) {
+          if (dict.count("dac")
+                  && dict.count("use_dac")
+                  && _get(dict, "use_dac") == "True") {
               init_dac(boost::lexical_cast<uint16_t>(_get(dict, "dac")));
           }
       }
