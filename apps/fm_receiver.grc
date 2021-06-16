@@ -212,25 +212,21 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bias_tee0: 'False'
+    bias_tee0: 'True'
     bias_tee1: 'False'
-    bw0: samp_rate
-    bw1: '200000'
+    bw: '2000000'
     comment: ''
-    corr0: '0'
-    corr1: '0'
-    dac: '8000'
+    dac: '6000'
     dc_calibration: RX_LPF
     dc_offset_mode0: '0'
     dc_offset_mode1: '0'
     device_id: '0'
     fpga_image: test123
     fpga_reload: 'False'
-    freq0: freq
-    freq1: 1e8
+    freq: freq
     gain0: rf_gain
     gain1: '10'
-    gain_mode0: 'False'
+    gain_mode0: 'True'
     gain_mode1: 'False'
     if_gain0: if_gain
     if_gain1: '20'
@@ -248,13 +244,14 @@ blocks:
     sampling: external
     smb: 10e6
     tamer: internal
-    trigger0: 'True'
+    trigger0: 'False'
     trigger1: 'False'
     trigger_role0: master
     trigger_role1: master
     trigger_signal0: J71_4
     trigger_signal1: J51_1
-    verbosity: warning
+    use_dac: 'True'
+    verbosity: info
     xb200: none
   states:
     bus_sink: false

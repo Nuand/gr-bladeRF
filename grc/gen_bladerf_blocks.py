@@ -68,6 +68,16 @@ parameters:
   label: 'Sample Rate (sps)'
   dtype: real
   default: samp_rate
+  
+- id: freq
+  label: 'Frequency (Hz)'
+  dtype: real
+  default: 1e8
+  
+- id: bw
+  label: 'Bandwidth (Hz)'
+  dtype: real
+  default: 200000
    
 - id: ref_clk
   label: 'Reference clock'
@@ -208,10 +218,10 @@ templates:
              
     )
     self.${'$'}{id}.set_sample_rate(${'$'}{sample_rate})
+    self.${'$'}{id}.set_center_freq(${'$'}{freq},0)
+    self.${'$'}{id}.set_bandwidth(${'$'}{bw},0)
     % for n in range(max_nchan):
-    ${'%'} if context.get('nchan')() > ${n}:
-    self.${'$'}{id}.set_center_freq(${'$'}{${'freq' + str(n)}}, ${n})
-    self.${'$'}{id}.set_freq_corr(${'$'}{${'corr' + str(n)}}, ${n})
+    ${'%'} if context.get('nchan')() > ${n}:    
     % if sourk == 'source':
     self.${'$'}{id}.set_dc_offset_mode(${'$'}{${'dc_offset_mode' + str(n)}}, ${n})
     self.${'$'}{id}.set_iq_balance_mode(${'$'}{${'iq_balance_mode' + str(n)}}, ${n})
@@ -219,14 +229,14 @@ templates:
     % endif
     self.${'$'}{id}.set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     self.${'$'}{id}.set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
-    self.${'$'}{id}.set_bandwidth(${'$'}{${'bw' + str(n)}}, ${n})
+    
     ${'%'} endif
     % endfor
   callbacks:
     - set_sample_rate(${'$'}{sample_rate})
-    % for n in range(max_nchan):
-    - set_center_freq(${'$'}{${'freq' + str(n)}}, ${n})
-    - set_freq_corr(${'$'}{${'corr' + str(n)}}, ${n})
+    - set_center_freq(${'$'}{freq}, 0)
+    - set_bandwidth(${'$'}{bw}, 0)
+    % for n in range(max_nchan):    
     % if sourk == 'source':
     - set_dc_offset_mode(${'$'}{${'dc_offset_mode' + str(n)}}, ${n})
     - set_iq_balance_mode(${'$'}{${'iq_balance_mode' + str(n)}}, ${n})
@@ -234,7 +244,6 @@ templates:
     % endif
     - set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     - set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
-    - set_bandwidth(${'$'}{${'bw' + str(n)}}, ${n})
     % endfor
 
 documentation: |-
@@ -351,27 +360,6 @@ file_format: 1
 # """
 
 PARAMS_TMPL = """
-- id: freq${n}
-  category: 'Channel ${n}'
-  label: 'Frequency (Hz)'
-  dtype: real
-  default: 1e8
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
-  
-- id: corr${n}
-  category: 'Channel ${n}'
-  label: 'Freq. Corr. (ppm)'
-  dtype: real
-  default: 0
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'} 
-   
-- id: bw${n}
-  category: 'Channel ${n}'
-  label: 'Bandwidth (Hz)'
-  dtype: real
-  default: 200000
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
-  
 - id: bias_tee${n}
   category: 'Channel ${n}'
   label: 'Bias tee'
