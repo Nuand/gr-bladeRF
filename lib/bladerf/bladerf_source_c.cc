@@ -73,55 +73,17 @@ bladerf_source_c::bladerf_source_c(const std::string &args) :
   _running(false),
   _agcmode(BLADERF_GAIN_DEFAULT)
 {
-  int status;
-
   dict_t dict = params_to_dict(args);
   /* Perform src/sink agnostic initializations */
   init(dict, BLADERF_RX);
 
   setup_blade_messaging();
 
-  /* Handle setting of sampling mode */
-  if (dict.count("sampling")) {
-    bladerf_sampling sampling = BLADERF_SAMPLING_UNKNOWN;
-
-    if (dict["sampling"] == "internal") {
-      sampling = BLADERF_SAMPLING_INTERNAL;
-    } else if (dict["sampling"] == "external") {
-      sampling = BLADERF_SAMPLING_EXTERNAL;
-    } else {
-      BLADERF_WARNING("Invalid sampling mode: " + dict["sampling"]);
-    }
-
-    if (sampling != BLADERF_SAMPLING_UNKNOWN) {
-      status = bladerf_set_sampling(_dev.get(), sampling);
-      if (status != 0) {
-        BLADERF_WARNING("Problem while setting sampling mode: " <<
-                        bladerf_strerror(status));
-      }
-    }
-  }
-
   /* Loopback */
   set_loopback_mode(dict.count("loopback") ? dict["loopback"] : "none");
 
   /* RX Mux */
   set_rx_mux_mode(dict.count("rxmux") ? dict["rxmux"] : "baseband");
-
-  /* AGC mode */
-  if (dict.count("agc_mode")) {
-    set_agc_mode(dict["agc_mode"]);
-  }
-
-  /* Specify initial gain mode */
-  if (dict.count("agc")) {
-    for (size_t i = 0; i < get_max_channels(); ++i) {
-      set_gain_mode(boost::lexical_cast<bool>(dict["agc"]), BLADERF_CHANNEL_RX(i));
-      BLADERF_INFO(boost::str(boost::format("%s gain mode set to '%s'")
-                    % channel2str(BLADERF_CHANNEL_RX(i))
-                    % get_gain_mode(BLADERF_CHANNEL_RX(i))));
-    }
-  }
 
   /* Warn user about using an old FPGA version, as we no longer strip off the
    * markers that were pressent in the pre-v0.0.1 FPGA */
