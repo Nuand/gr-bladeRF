@@ -230,7 +230,7 @@ templates:
     % if sourk == 'source':
     - set_dc_offset_mode(${'$'}{${'dc_offset_mode' + str(n)}}, ${n})
     - set_iq_balance_mode(${'$'}{${'iq_balance_mode' + str(n)}}, ${n})
-    - set_gain_mode(${'$'}{${'gain_mode' + str(n)}}, ${n})
+    - set_gain_mode(${'$'}{${'gain_mode' + str(n)}} == True, ${n})
     % endif
     - set_gain(${'$'}{${'gain' + str(n)}}, ${n})
     - set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
@@ -375,8 +375,9 @@ PARAMS_TMPL = """
 - id: bias_tee${n}
   category: 'Channel ${n}'
   label: 'Bias tee'
-  dtype: bool
-  default: False
+  dtype: enum
+  default: 'False'
+  options: ['False', 'True']
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
   
 % if sourk == 'source':
@@ -401,8 +402,9 @@ PARAMS_TMPL = """
 - id: gain_mode${n}
   category: 'Channel ${n}'
   label: 'AGC'
-  dtype: bool
-  default: False
+  dtype: enum
+  default: 'False'
+  options: ['False', 'True']
   hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
 % endif
 
