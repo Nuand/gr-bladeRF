@@ -1,11 +1,16 @@
 # gr-bladeRF
 
-You can use a docker container for quick deployment. 
-Easy docker installation: https://docs.docker.com/engine/install/ubuntu/#install-from-a-package
+GNU Radio source and sink blocks for bladeRF devices.
 
-After install run next commands:
+## bladeRF wiki
 
-    sudo docker/run.sh
+* [bladeRF wiki](https://github.com/Nuand/bladeRF/wiki)
+
+## Installation
+
+Build from source
+
+    git clone https://github.com/Nuand/gr-bladeRF.git
     cd gr-bladeRF
     mkdir build
     cd build
@@ -13,6 +18,7 @@ After install run next commands:
     make -j4
     sudo make install
 
+## GNURadio-Companion Examples
 Run FM-receiver example:
 
     cd 
