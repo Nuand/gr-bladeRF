@@ -25,6 +25,7 @@ category: '[bladeRF]'
 flags: throttle
 
 parameters:
+
   
 - id: metadata
   label: Metadata
@@ -109,6 +110,14 @@ parameters:
   dtype: real
   default: 10000
   hide: ${'$'}{ 'none' if use_dac == 'True' else 'part'} 
+  
+- id: show_pmic
+  label: 'Show PMIC controls'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: part  
+  
 
 - id: xb200
   category: x40/x115
@@ -167,6 +176,7 @@ inputs:
 - domain: message
   id: pmic_in
   optional: true
+  hide: ${'$'}{show_pmic == 'False'}
   
 % if sourk == 'source':
 outputs:
@@ -182,7 +192,8 @@ outputs:
 - domain: message
   id: pmic_out
   optional: true
-
+  hide: ${'$'}{show_pmic == 'False'}
+  
 templates:
   imports: |-
      import bladeRF
@@ -228,8 +239,7 @@ templates:
     self.${'$'}{id}.set_gain_mode(${'$'}{${'gain_mode' + str(n)}}, ${n})    
     % endif
     self.${'$'}{id}.set_gain(${'$'}{${'gain' + str(n)}}, ${n})
-    self.${'$'}{id}.set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})
-    
+    self.${'$'}{id}.set_if_gain(${'$'}{${'if_gain' + str(n)}}, ${n})    
     ${'%'} endif
     % endfor
   callbacks:
