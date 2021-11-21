@@ -24,6 +24,10 @@ Run FM-receiver example:
     cd 
     gnuradio-companion gr-bladeRF/apps/fm_receiver.grc
 
+## Run on Raspberry
+   
+   [How to install gr-bladeRF on Raspberry Pi 4
+](raspberry/)
 
 
 
