@@ -26,7 +26,6 @@ flags: throttle
 
 parameters:
 
-  
 - id: metadata
   label: Metadata
   dtype: enum
@@ -38,7 +37,7 @@ parameters:
   label: 'Device'
   dtype: string
   default: '0'
-  hide: ${'$'}{ 'none' if device_id else 'part'}
+  hide: ${'$'}{ 'none' if device_id else 'part' }
 
 - id: fpga_reload
   label: 'FPGA reload'
@@ -50,7 +49,7 @@ parameters:
 - id: fpga_image
   label: 'FPGA image'
   dtype: string
-  hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part'}  
+  hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part' }  
   
 - id: nchan
   label: 'Num Channels'
@@ -80,17 +79,19 @@ parameters:
   dtype: real
   default: 200000
    
-- id: ref_clk
-  label: 'Reference clock'
-  dtype: real
-  
 - id: in_clk
   label: 'Input clock'
   dtype: enum
   default: auto
   options: ['ONBOARD', 'EXTERNAL']
   option_labels: ['Onboard', 'External']
-  
+
+- id: ref_clk
+  label: 'Reference clock'
+  dtype: real
+  default: 10000000  
+  hide: ${'$'}{ 'none' if in_clk == 'ONBOARD' else 'part' } 
+
 - id: out_clk
   label: 'Output clock'
   dtype: enum
@@ -109,8 +110,38 @@ parameters:
   label: 'VCXTO DAC'
   dtype: real
   default: 10000
-  hide: ${'$'}{ 'none' if use_dac == 'True' else 'part'} 
+  hide: ${'$'}{ 'none' if use_dac == 'True' else 'part' } 
   
+- id: use_iq_dcoff
+  category: 'Tuning & Correction'
+  label: 'Specify DC offset correction'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: part
+
+- id: dcoff
+  category: 'Tuning & Correction'
+  label: 'DC Offset Correction [I,Q]'
+  dtype: int_vector
+  default: [0, 0]
+  hide: ${'$'}{ ('none' if use_iq_dcoff == 'True' else 'part') } 
+
+- id: use_iq_balance
+  category: 'Tuning & Correction'
+  label: 'Specify I/Q balance correction'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: part
+
+- id: iq_balance
+  category: 'Tuning & Correction'
+  label: 'I/Q balance correction [Magnitude,Phase]'
+  dtype: int_vector
+  default: [0, 0]
+  hide: ${'$'}{ ('none' if use_iq_balance == 'True' else 'part') } 
+
 - id: show_pmic
   label: 'Show PMIC controls'
   dtype: enum
@@ -160,7 +191,7 @@ parameters:
   category: x40/x115
   dtype: real
   default: 0
-  hide: part  
+  hide: part
   
 - id: dc_calibration
   label: 'DC calibration'
@@ -171,6 +202,10 @@ parameters:
   hide: part
   
 ${params}
+
+asserts:
+- ${'$'}{ len(dcoff)      == 2 }
+- ${'$'}{ len(iq_balance) == 2 }
 
 inputs:
 - domain: message
