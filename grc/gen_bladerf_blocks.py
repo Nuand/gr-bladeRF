@@ -37,19 +37,19 @@ parameters:
   label: 'Device'
   dtype: string
   default: '0'
-  hide: ${'$'}{ 'none' if device_id else 'part' }
+  hide: ${'$'}{'all' if device_id == '0' else 'part'}
 
 - id: fpga_reload
   label: 'FPGA reload'
   dtype: enum
-  default: auto
+  default: 'False'
   options: ['False', 'True']
   hide: part
   
 - id: fpga_image
-  label: 'FPGA image'
+  label: 'FPGA image' 
   dtype: string
-  hide: ${'$'}{ 'none' if fpga_reload == 'True' else 'part' }  
+  hide: ${'$'}{'part' if fpga_reload == 'True' else 'all'}  
   
 - id: nchan
   label: 'Num Channels'
@@ -90,7 +90,7 @@ parameters:
   label: 'Reference clock'
   dtype: real
   default: 10000000  
-  hide: ${'$'}{ 'none' if in_clk == 'ONBOARD' else 'part' } 
+  hide: ${'$'}{'all' if in_clk == 'ONBOARD' else 'part'} 
 
 - id: out_clk
   label: 'Output clock'
@@ -98,49 +98,6 @@ parameters:
   default: False
   options: [False, True]
   option_labels: ['Disable', 'Enable']
-  
-- id: use_dac
-  label: 'Use VCXTO DAC'
-  dtype: enum
-  default: False
-  options: ['False', 'True']
-  hide: part
-  
-- id: dac
-  label: 'VCXTO DAC'
-  dtype: real
-  default: 10000
-  hide: ${'$'}{ 'none' if use_dac == 'True' else 'part' } 
-  
-- id: use_iq_dcoff
-  category: 'Tuning & Correction'
-  label: 'Specify DC offset correction'
-  dtype: enum
-  default: False
-  options: ['False', 'True']
-  hide: part
-
-- id: dcoff
-  category: 'Tuning & Correction'
-  label: 'DC Offset Correction [I,Q]'
-  dtype: int_vector
-  default: [0, 0]
-  hide: ${'$'}{ ('none' if use_iq_dcoff == 'True' else 'part') } 
-
-- id: use_iq_balance
-  category: 'Tuning & Correction'
-  label: 'Specify I/Q balance correction'
-  dtype: enum
-  default: False
-  options: ['False', 'True']
-  hide: part
-
-- id: iq_balance
-  category: 'Tuning & Correction'
-  label: 'I/Q balance correction [Magnitude,Phase]'
-  dtype: int_vector
-  default: [0, 0]
-  hide: ${'$'}{ ('none' if use_iq_balance == 'True' else 'part') } 
 
 - id: show_pmic
   label: 'Show PMIC controls'
@@ -148,7 +105,61 @@ parameters:
   default: False
   options: ['False', 'True']
   hide: part  
+
+# x40/x115
+
+- id: show_v1
+  category: x40/x115
+  label: 'Show x40/x115 options'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: part  
+
+- id: use_dac
+  category: x40/x115
+  label: 'Use VCXTO DAC'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'}
   
+- id: dac
+  category: x40/x115
+  label: 'VCXTO DAC'
+  dtype: real
+  default: 10000
+  hide: ${'$'}{'part' if (show_v1 == 'True' and use_dac == 'True') else 'all'} 
+  
+- id: use_iq_dcoff
+  category: x40/x115
+  label: 'Specify DC offset correction'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'}
+  
+- id: dcoff
+  category: x40/x115
+  label: 'DC Offset Correction [I,Q]'
+  dtype: int_vector
+  default: [0, 0]
+  hide: ${'$'}{'part' if (show_v1 == 'True' and use_iq_dcoff == 'True') else 'all'} 
+
+- id: use_iq_balance
+  category: x40/x115
+  label: 'Specify I/Q balance correction'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'}
+  
+- id: iq_balance
+  category: x40/x115
+  label: 'I/Q balance correction [Magnitude, Phase]'
+  dtype: int_vector
+  default: [0, 0]
+  hide: ${'$'}{'part' if (show_v1 == 'True' and use_iq_balance == 'True') else 'all'} 
 
 - id: xb200
   category: x40/x115
@@ -157,7 +168,7 @@ parameters:
   default: 'none'
   options: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
   option_labels: ['none','auto', 'auto3db', '50M', '144M', '222M', 'custom']
-  hide: part
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'} 
 
 - id: tamer
   category: x40/x115
@@ -166,7 +177,7 @@ parameters:
   default: 'internal'
   options: ['internal','external_1pps', 'external']
   option_labels: ['Internal','External 1pps', 'External 10 MHz']
-  hide: part
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'} 
   
 - id: sampling
   category: x40/x115
@@ -175,7 +186,7 @@ parameters:
   default: 'internal'
   options: ['internal', 'external']
   option_labels: ['Internal','External']
-  hide: part
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'} 
   
 - id: lpf_mode
   label: 'LPF mode'
@@ -184,14 +195,14 @@ parameters:
   default: 'disabled'
   options: ['disabled', 'bypassed']
   option_labels: ['Disabled', 'Bypassed'] 
-  hide: part
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'} 
   
 - id: smb
   label: 'SMB frequency'
   category: x40/x115
   dtype: real
   default: 0
-  hide: part
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'} 
   
 - id: dc_calibration
   label: 'DC calibration'
@@ -199,8 +210,8 @@ parameters:
   dtype: enum
   default: 'LPF_TUNING'
   options: ['LPF_TUNING', 'TX_LPF', 'RX_LPF', 'RXVGA2']
-  hide: part
-  
+  hide: ${'$'}{'part' if show_v1 == 'True' else 'all'} 
+ 
 ${params}
 
 asserts:
@@ -405,13 +416,15 @@ file_format: 1
 # """
 
 PARAMS_TMPL = """
+# Channel ${n}
+
 - id: bias_tee${n}
   category: 'Channel ${n}'
   label: 'Bias tee'
   dtype: enum
   default: 'False'
   options: ['False', 'True']
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}  
+  hide: ${'$'}{ ( 'none' if (nchan > ${n}) else 'all' ) }  
   
 % if sourk == 'source':
 - id: dc_offset_mode${n}
@@ -421,7 +434,7 @@ PARAMS_TMPL = """
   default: 0
   options: [0, 1, 2]  
   option_labels: [Off, Manual, Automatic]
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  hide: ${'$'}{ ( 'none' if (nchan > ${n}) else 'all' ) }
   
 - id: iq_balance_mode${n}
   category: 'Channel ${n}'
@@ -430,7 +443,7 @@ PARAMS_TMPL = """
   default: 0
   options: [0, 1, 2]
   option_labels: [Off, Manual, Automatic]
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  hide: ${'$'}{ ( 'none' if (nchan > ${n}) else 'all' ) }
   
 - id: gain_mode${n}
   category: 'Channel ${n}'
@@ -438,7 +451,7 @@ PARAMS_TMPL = """
   dtype: enum
   default: 'False'
   options: ['False', 'True']
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  hide: ${'$'}{ ( 'none' if (nchan > ${n}) else 'all' ) }
 % endif
 
 - id: gain${n}
@@ -446,14 +459,14 @@ PARAMS_TMPL = """
   label: 'RF Gain (dB)'
   dtype: real
   default: 10
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  hide: ${'$'}{ ( 'none' if (nchan > ${n}) else 'all' ) }
   
 - id: if_gain${n}
   category: 'Channel ${n}'
   label: 'IF Gain (dB)'
   dtype: real
   default: 20
-  hide: ${'$'}{'none' if (nchan > ${n}) else 'all'}
+  hide: ${'$'}{ ( 'none' if (nchan > ${n}) else 'all' ) }
 
 - id: trigger${n}
   label: 'Use trigger'
