@@ -4,3 +4,5 @@
 *.user
 build*/
 examples/grc/*.py
+.vscode
+apps/*.py
