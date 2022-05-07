@@ -27,6 +27,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
+#include <boost/format.hpp>
 
 #include <libbladeRF.h>
 
