@@ -220,6 +220,7 @@ templates:
              + ",metadata=" + '${'$'}{metadata}'
              + ",bladerf=" +  str(${'$'}{device_id})
              + ",verbosity=" + '${'$'}{verbosity}'
+             + ",sample_format=" + '${'$'}{sample_format}'
              + ",fpga=" + str(${'$'}{fpga_image})
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
              + ",use_ref_clk=" + '${'$'}{use_ref_clk}'
@@ -293,6 +294,10 @@ documentation: |-
 
   Verbosity:
   Sets the filter level for displayed log messages.
+
+  Sample Format:
+  Sets the sample format to either 16bit or 8bit.
+  8bit mode allows for a faster sampling rate.
   
   Sample Rate:
   The sample rate is the number of samples per second output by this block on each channel.
