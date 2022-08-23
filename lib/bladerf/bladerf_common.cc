@@ -365,8 +365,22 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
     _stream_timeout = boost::lexical_cast<unsigned int>(_get(dict, "stream_timeout_ms"));
   }
 
-  if (dict.count("metadata") && _get(dict, "metadata") == "True") {
-    _format = BLADERF_FORMAT_SC16_Q11_META;
+  if (dict.count("sample_format") && _get(dict, "sample_format") == "16bit") {
+    if (dict.count("metadata") && _get(dict, "metadata") == "True") {
+      _format = BLADERF_FORMAT_SC16_Q11_META;
+      BLADERF_INFO("16bit meta mode enabled");
+    } else {
+      _format = BLADERF_FORMAT_SC16_Q11;
+      BLADERF_INFO("16bit mode enabled");
+    }
+  } else if (dict.count("sample_format") && _get(dict, "sample_format") == "8bit") {
+    if (dict.count("metadata") && _get(dict, "metadata") == "True") {
+      _format = BLADERF_FORMAT_SC8_Q8_META;
+      BLADERF_INFO("8bit meta mode enabled");
+    } else {
+      _format = BLADERF_FORMAT_SC8_Q8;
+      BLADERF_INFO("8bit mode enabled");
+    }
   }
 
   /* Require value to be >= 2 so we can ensure we have twice as many
