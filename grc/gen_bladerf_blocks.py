@@ -64,6 +64,13 @@ parameters:
   default: verbose
   options: ['verbose', 'debug', 'info', 'warning', 'error', 'critical', 'silent']
   option_labels: [verbose, debug, info, warning, error, critical, silent]
+
+- id: sample_format
+  label: 'Sample Format'
+  dtype: enum
+  default: 16bit
+  options: ['16bit', '8bit']
+  option_labels: [16bit, 8bit]
   
 - id: sample_rate
   label: 'Sample Rate (sps)'
