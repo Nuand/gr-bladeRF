@@ -41,11 +41,11 @@ blocks:
     label: Amplitude
     min_len: '200'
     orient: QtCore.Qt.Horizontal
-    rangeType: int
+    rangeType: float
     start: '0'
-    step: '1'
-    stop: '254'
-    value: '1'
+    step: 1e-3
+    stop: '1'
+    value: '.5'
     widget: counter_slider
   states:
     bus_sink: false
@@ -166,7 +166,7 @@ blocks:
     coordinate: [72, 324.0]
     rotation: 0
     state: true
-- name: bladeRF_sink_0
+- name: bladeRF_sink_1
   id: bladeRF_sink
   parameters:
     affinity: ''
@@ -178,7 +178,7 @@ blocks:
     dac: '10000'
     dc_calibration: LPF_TUNING
     device_id: 52f4b4c4e1164ce3a7b89d3e47c8c0e8
-    fpga_image: /home/rthomp/code/fpga-images/hostedxA9-v0.15.0-8bit-mode/hostedxA9.rbf
+    fpga_image: ''
     fpga_reload: 'False'
     freq: freq
     gain0: rf_gain
@@ -192,8 +192,8 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     out_clk: 'False'
-    ref_clk: ref_clk
-    sample_format: 16bit
+    ref_clk: 10e6
+    sample_format: 8bit
     sample_rate: samp_rate
     sampling: internal
     show_pmic: 'False'
@@ -212,9 +212,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 164.0]
+    coordinate: [408, 164.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: bladeRF_source_0
   id: bladeRF_source
   parameters:
@@ -269,7 +269,7 @@ blocks:
     bus_structure: null
     coordinate: [600, 148.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_const_sink_x_0
   id: qtgui_const_sink_x
   parameters:
@@ -361,7 +361,7 @@ blocks:
     bus_structure: null
     coordinate: [872, 180.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_const_sink_x_0_0
   id: qtgui_const_sink_x
   parameters:
@@ -534,7 +534,7 @@ blocks:
     bus_structure: null
     coordinate: [872, 252.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_freq_sink_x_1_0
   id: qtgui_freq_sink_x
   parameters:
@@ -676,7 +676,7 @@ blocks:
     bus_structure: null
     coordinate: [872, 340.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_waterfall_sink_x_0_0
   id: qtgui_waterfall_sink_x
   parameters:
@@ -740,7 +740,7 @@ blocks:
     state: true
 
 connections:
-- [analog_sig_source_x_0, '0', bladeRF_sink_0, '0']
+- [analog_sig_source_x_0, '0', bladeRF_sink_1, '0']
 - [analog_sig_source_x_0, '0', qtgui_const_sink_x_0_0, '0']
 - [analog_sig_source_x_0, '0', qtgui_freq_sink_x_1_0, '0']
 - [analog_sig_source_x_0, '0', qtgui_waterfall_sink_x_0_0, '0']

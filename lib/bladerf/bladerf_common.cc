@@ -366,6 +366,11 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
   }
 
   if (dict.count("sample_format") && _get(dict, "sample_format") == "16bit") {
+    status = bladerf_set_bitmode(_dev.get(), _16bit);
+    if (status < 0) {
+      BLADERF_THROW_STATUS(status, "Failed to set bitmode to 16bit.")
+    }
+
     if (dict.count("metadata") && _get(dict, "metadata") == "True") {
       _format = BLADERF_FORMAT_SC16_Q11_META;
       BLADERF_INFO("16bit meta mode enabled");
@@ -374,6 +379,11 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       BLADERF_INFO("16bit mode enabled");
     }
   } else if (dict.count("sample_format") && _get(dict, "sample_format") == "8bit") {
+    status = bladerf_set_bitmode(_dev.get(), _8bit);
+    if (status < 0) {
+      BLADERF_THROW_STATUS(status, "Failed to set bitmode to 8bit.")
+    }
+
     if (dict.count("metadata") && _get(dict, "metadata") == "True") {
       _format = BLADERF_FORMAT_SC8_Q8_META;
       BLADERF_INFO("8bit meta mode enabled");
