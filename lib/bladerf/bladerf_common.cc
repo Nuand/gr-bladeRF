@@ -300,23 +300,28 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
 
 
 
-  if(dict.count("ref_clk"))
+  bool enabled_refclk = false;
+  if(dict.count("use_ref_clk") && dict.count("ref_clk"))
   {
+
       auto freq = boost::lexical_cast<int>(_get(dict,"ref_clk"));
-      if(freq)
+      if(_get(dict, "use_ref_clk") == "True" && freq)
       {
           init_refclk(freq);
-      }
-      else
-      {
-          if (dict.count("dac")
-                  && dict.count("use_dac")
-                  && _get(dict, "use_dac") == "True") {
-              init_dac(boost::lexical_cast<uint16_t>(_get(dict, "dac")));
-          }
+          enabled_refclk = true;
       }
   }
 
+  if (dict.count("dac")
+        && dict.count("use_dac")
+        && _get(dict, "use_dac") == "True") {
+     if (enabled_refclk) {
+        BLADERF_WARNING("Cannot set VCTCXO DAC trim because VCTCXO taming is "
+                        "being driven by PLL and reference clock.");
+     } else {
+        init_dac(boost::lexical_cast<uint16_t>(_get(dict, "dac")));
+     }
+  }
 
   size_t numchan = boost::lexical_cast<size_t>(_get(dict, "numchan"));
   for(size_t i = 0; i < numchan; ++ i)

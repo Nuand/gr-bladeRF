@@ -80,9 +80,18 @@ parameters:
   dtype: real
   default: 200000
    
+- id: use_ref_clk
+  label: 'Use reference clock'
+  dtype: enum
+  default: False
+  options: ['False', 'True']
+  hide: part
+
 - id: ref_clk
   label: 'Reference clock'
   dtype: real
+  default: 10e6
+  hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
   
 - id: in_clk
   label: 'Input clock'
@@ -206,6 +215,7 @@ templates:
              + ",verbosity=" + '${'$'}{verbosity}'
              + ",fpga=" + str(${'$'}{fpga_image})
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
+             + ",use_ref_clk=" + '${'$'}{use_ref_clk}'
              + ",ref_clk=" + str(int(${'$'}{ref_clk}))
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})
