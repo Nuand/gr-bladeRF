@@ -129,7 +129,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     out_clk: 'False'
-    ref_clk: ''
+    ref_clk: 10e6
     sample_rate: samp_rate
     sampling: internal
     smb: '0'
@@ -185,7 +185,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     out_clk: 'False'
-    ref_clk: ''
+    ref_clk: 10e6
     sample_rate: samp_rate
     sampling: internal
     smb: '0'
