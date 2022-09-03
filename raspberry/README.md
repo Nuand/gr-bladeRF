@@ -51,6 +51,7 @@ Change password on first login and connect again.
     sudo apt-get install bladerf-fpga-hostedx40   # for bladeRF x40
     sudo apt-get install bladerf-fpga-hostedx115  # for bladeRF x115
     sudo apt-get install bladerf-fpga-hostedxa4   # for bladeRF 2.0 Micro A4
+    sudo apt-get install bladerf-fpga-hostedxa5   # for bladeRF 2.0 Micro A5
     sudo apt-get install bladerf-fpga-hostedxa9   # for bladeRF 2.0 Micro A9
 
 Check bladeRF:
@@ -125,7 +126,7 @@ Make directory for source
 ###### gr-osmosdr
 
     cd ~/gr
-    git clone https://git.osmocom.org/gr-osmosdr
+    git clone https://github.com/Nuand/gr-osmosdr -b dev-gr-3.9
     cd gr-osmosdr
     mkdir build && cd build
     cmake ..
