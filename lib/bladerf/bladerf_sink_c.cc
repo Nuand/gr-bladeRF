@@ -184,6 +184,20 @@ bool bladerf_sink_c::start()
   _16icbuf = reinterpret_cast<int16_t *>(volk_malloc(2*_samples_per_buffer*sizeof(int16_t), alignment));
   _32fcbuf = reinterpret_cast<gr_complex *>(volk_malloc(_samples_per_buffer*sizeof(gr_complex), alignment));
 
+  if (_format == BLADERF_FORMAT_SC8_Q7 || _format == BLADERF_FORMAT_SC8_Q7_META) {
+    bladerf_set_rfic_register(_dev.get(),0x003,0x54); // The OC Register
+
+    // Need to determine if these are necessary
+    bladerf_set_rfic_register(_dev.get(),0xc2,0x9f);  // TX BBF R1
+    bladerf_set_rfic_register(_dev.get(),0xc3,0x9f);  // TX baseband filter R2
+    bladerf_set_rfic_register(_dev.get(),0xc4,0x9f);  // TX baseband filter R3
+    bladerf_set_rfic_register(_dev.get(),0xc5,0x9f);  // TX baseband filter R4
+    bladerf_set_rfic_register(_dev.get(),0xc6,0x9f);  // TX baseband filter real pole word
+    bladerf_set_rfic_register(_dev.get(),0xc7,0x00);  // TX baseband filter C1
+    bladerf_set_rfic_register(_dev.get(),0xc8,0x00);  // TX baseband filter C2
+    bladerf_set_rfic_register(_dev.get(),0xc9,0x00);  // TX baseband filter real pole word}
+  }
+
   _running = true;
 
   return true;

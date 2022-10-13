@@ -202,6 +202,32 @@ bool bladerf_source_c::start()
   _16icbuf = reinterpret_cast<int16_t *>(volk_malloc(2*_samples_per_buffer*sizeof(int16_t), alignment));
   _32fcbuf = reinterpret_cast<gr_complex *>(volk_malloc(_samples_per_buffer*sizeof(gr_complex), alignment));
 
+  if (_format == BLADERF_FORMAT_SC8_Q7 || _format == BLADERF_FORMAT_SC8_Q7_META) {
+    // OC Register
+    bladerf_set_rfic_register(_dev.get(),0x003,0x54);
+
+    // Gain and calibration
+    bladerf_set_rfic_register(_dev.get(),0x1e0,0xBF);
+    bladerf_set_rfic_register(_dev.get(),0x1e4,0xFF);
+    bladerf_set_rfic_register(_dev.get(),0x1f2,0xFF);
+    bladerf_set_rfic_register(_dev.get(),0x1e6,0x87);
+
+    // Miller and BBF caps
+    bladerf_set_rfic_register(_dev.get(),0x1e7,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1e8,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1e9,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1ea,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1eb,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1ec,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1ed,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1ee,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1ef,0x00);
+    bladerf_set_rfic_register(_dev.get(),0x1e0,0xBF);
+
+    // BIST and Data Port Test Config [D1:D0] "Must be 2’b00"
+    bladerf_set_rfic_register(_dev.get(),0x3f6,0x03);
+  }
+
   _running = true;
   fire_trigger();
   return true;

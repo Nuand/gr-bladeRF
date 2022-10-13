@@ -876,6 +876,11 @@ double bladerf_common::set_sample_rate(double rate, bladerf_channel ch)
   int status;
   struct bladerf_rational_rate rational_rate, actual;
 
+  if (_format == BLADERF_FORMAT_SC8_Q7 || _format == BLADERF_FORMAT_SC8_Q7_META) {
+    BLADERF_DEBUG("sample rate /= 2 for 8bit mode");
+    rate /= 2;
+  }
+
   rational_rate.integer = static_cast<uint32_t>(rate);
   rational_rate.den = 10000;
   rational_rate.num = (rate - rational_rate.integer) * rational_rate.den;
@@ -886,7 +891,11 @@ double bladerf_common::set_sample_rate(double rate, bladerf_channel ch)
     BLADERF_THROW_STATUS(status, "Failed to set sample rate");
   }
 
-  return actual.integer + (actual.num / static_cast<double>(actual.den));
+  if (_format == BLADERF_FORMAT_SC8_Q7 || _format == BLADERF_FORMAT_SC8_Q7_META) {
+    return 2*actual.integer + (2*actual.num / static_cast<double>(actual.den));
+  } else {
+    return actual.integer + (actual.num / static_cast<double>(actual.den));
+  }
 }
 
 double bladerf_common::get_sample_rate(bladerf_channel ch)
