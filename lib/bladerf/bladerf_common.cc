@@ -908,7 +908,11 @@ double bladerf_common::get_sample_rate(bladerf_channel ch)
     BLADERF_THROW_STATUS(status, "Failed to get sample rate");
   }
 
-  return rate.integer + rate.num / static_cast<double>(rate.den);
+  if (_format == BLADERF_FORMAT_SC8_Q7 || _format == BLADERF_FORMAT_SC8_Q7_META) {
+    return 2*rate.integer + 2*rate.num / static_cast<double>(rate.den);
+  } else {
+    return rate.integer + rate.num / static_cast<double>(rate.den);
+  }
 }
 
 osmosdr::freq_range_t bladerf_common::freq_range(bladerf_channel ch)
