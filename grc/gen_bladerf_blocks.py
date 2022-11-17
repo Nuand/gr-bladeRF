@@ -65,6 +65,13 @@ parameters:
   options: ['verbose', 'debug', 'info', 'warning', 'error', 'critical', 'silent']
   option_labels: [verbose, debug, info, warning, error, critical, silent]
 
+- id: feature
+  label: 'Feature'
+  dtype: enum
+  default: default
+  options: ['default', 'oversample']
+  option_labels: [Default, Oversample]
+
 - id: sample_format
   label: 'Sample Format'
   dtype: enum
@@ -220,6 +227,7 @@ templates:
              + ",metadata=" + '${'$'}{metadata}'
              + ",bladerf=" +  str(${'$'}{device_id})
              + ",verbosity=" + '${'$'}{verbosity}'
+             + ",feature=" + '${'$'}{feature}'
              + ",sample_format=" + '${'$'}{sample_format}'
              + ",fpga=" + str(${'$'}{fpga_image})
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
@@ -294,6 +302,9 @@ documentation: |-
 
   Verbosity:
   Sets the filter level for displayed log messages.
+
+  Feature:
+  Sets an availble bladeRF device feature.
 
   Sample Format:
   Sets the sample format to either 16bit or 8bit.
