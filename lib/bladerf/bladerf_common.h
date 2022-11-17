@@ -290,6 +290,7 @@ protected:
   unsigned int _stream_timeout; /**< timeout for backend transfers */
 
   bladerf_format _format;       /**< sample format to use */
+  bladerf_feature _feature;
 
   bladerf_channel_map _chanmap; /**< map of antennas to channels */
   bladerf_channel_enable_map _enables;  /**< enabled channels */

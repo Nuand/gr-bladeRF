@@ -365,6 +365,24 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
     _stream_timeout = boost::lexical_cast<unsigned int>(_get(dict, "stream_timeout_ms"));
   }
 
+  /* Set Feature */
+  if (dict.count("feature") && _get(dict, "feature") == "default") {
+    _feature = BLADERF_FEATURE_DEFAULT;
+  } else if (dict.count("feature") && _get(dict, "feature") == "oversample") {
+    _feature = BLADERF_FEATURE_OVERSAMPLE;
+  } else {
+    BLADERF_THROW("Unknown feature. Setting to default.");
+    _feature = BLADERF_FEATURE_DEFAULT;
+  }
+
+  status = bladerf_set_feature(_dev.get(), _feature);
+  if (status != 0) {
+    BLADERF_THROW_STATUS(status, "Unabled to set feature");
+  } else {
+    std::string feature_text = (_feature == BLADERF_FEATURE_OVERSAMPLE) ? "OVERSAMPLE" : "DEFAULT";
+    BLADERF_INFO(feature_text + " feature enabled");
+  }
+
   if (dict.count("sample_format") && _get(dict, "sample_format") == "16bit") {
     if (dict.count("metadata") && _get(dict, "metadata") == "True") {
       _format = BLADERF_FORMAT_SC16_Q11_META;
