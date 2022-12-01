@@ -1,4 +1,4 @@
-options:
+t options:
   parameters:
     author: ''
     catch_exceptions: 'True'
@@ -23,6 +23,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: Not titled yet
+    window_size: (1000,1000)
   states:
     bus_sink: false
     bus_source: false
@@ -106,18 +107,14 @@ blocks:
     alias: ''
     bias_tee0: 'False'
     bias_tee1: 'False'
-    bw0: samp_rate
-    bw1: '200000'
+    bw: '200000'
     comment: ''
-    corr0: '0'
-    corr1: '0'
     dac: '10000'
     dc_calibration: LPF_TUNING
     device_id: '0'
     fpga_image: ''
     fpga_reload: 'False'
-    freq0: freq
-    freq1: 1e8
+    freq: 1e8
     gain0: rf_gain_sink
     gain1: '10'
     if_gain0: '20'
@@ -132,6 +129,7 @@ blocks:
     ref_clk: 10e6
     sample_rate: samp_rate
     sampling: internal
+    show_pmic: 'False'
     smb: '0'
     tamer: internal
     trigger0: 'True'
@@ -140,6 +138,7 @@ blocks:
     trigger_role1: master
     trigger_signal0: J51_1
     trigger_signal1: J51_1
+    use_dac: 'False'
     verbosity: verbose
     xb200: none
   states:
@@ -156,11 +155,8 @@ blocks:
     alias: ''
     bias_tee0: 'False'
     bias_tee1: 'False'
-    bw0: samp_rate
-    bw1: '200000'
+    bw: '200000'
     comment: ''
-    corr0: '0'
-    corr1: '0'
     dac: '10000'
     dc_calibration: LPF_TUNING
     dc_offset_mode0: '0'
@@ -168,8 +164,7 @@ blocks:
     device_id: '0'
     fpga_image: ''
     fpga_reload: 'False'
-    freq0: freq
-    freq1: 1e8
+    freq: 1e8
     gain0: '10'
     gain1: '10'
     gain_mode0: 'False'
@@ -188,6 +183,7 @@ blocks:
     ref_clk: 10e6
     sample_rate: samp_rate
     sampling: internal
+    show_pmic: 'False'
     smb: '0'
     tamer: internal
     trigger0: 'True'
@@ -196,6 +192,7 @@ blocks:
     trigger_role1: master
     trigger_signal0: J51_1
     trigger_signal1: J51_1
+    use_dac: 'False'
     verbosity: verbose
     xb200: none
   states:
