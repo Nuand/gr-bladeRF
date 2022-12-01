@@ -283,8 +283,13 @@ int bladerf_source_c::work(int noutput_items,
 
   // convert from int16_t to float
   // output_items is gr_complex (2x float), so num_points is 2*noutput_items
-  volk_16i_s32f_convert_32f(reinterpret_cast<float *>(_32fcbuf), _16icbuf,
-                            SCALING_FACTOR_SC16_Q11, 2*noutput_items);
+  if (_format == BLADERF_FORMAT_SC8_Q7 || _format == BLADERF_FORMAT_SC8_Q7_META) {
+    volk_8i_s32f_convert_32f(reinterpret_cast<float *>(_32fcbuf), (int8_t*)_16icbuf,
+                              SCALING_FACTOR_SC8_Q7, 2*noutput_items);
+  } else {
+    volk_16i_s32f_convert_32f(reinterpret_cast<float *>(_32fcbuf), _16icbuf,
+                              SCALING_FACTOR_SC16_Q11, 2*noutput_items);
+  }
 
   // copy the samples into output_items
   gr_complex **out = reinterpret_cast<gr_complex **>(&output_items[0]);
