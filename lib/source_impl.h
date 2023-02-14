@@ -9,7 +9,7 @@
 #define INCLUDED_BLADERF_SOURCE_IMPL_H
 
 #include <bladeRF/source.h>
-#include "bladerf_source_c.h"
+#include "bladerf/bladerf_source_c.h"
 #include "channel_store.h"
 
 namespace gr {
