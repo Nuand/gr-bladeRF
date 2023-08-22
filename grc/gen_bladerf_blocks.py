@@ -182,7 +182,7 @@ parameters:
   label: 'SMB frequency'
   category: x40/x115
   dtype: real
-  default: 0
+  default: 38.4e6
   hide: part  
   
 - id: dc_calibration
