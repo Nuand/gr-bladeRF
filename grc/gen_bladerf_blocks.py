@@ -113,6 +113,12 @@ parameters:
   default: 4096
   hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
 
+- id: buffers
+  label: 'Number of Buffers'
+  dtype: real
+  default: 512
+  hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
+
 - id: in_clk
   label: 'Input clock'
   dtype: enum
@@ -240,6 +246,7 @@ templates:
              + ",use_ref_clk=" + '${'$'}{use_ref_clk}'
              + ",ref_clk=" + str(int(${'$'}{ref_clk}))
              + ",buflen=" + str(int(${'$'}{buflen}))
+             + ",buffers=" + str(int(${'$'}{buffers}))
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})
              + ",use_dac=" + '${'$'}{use_dac}'
