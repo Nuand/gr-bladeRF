@@ -107,6 +107,12 @@ parameters:
   default: 10e6
   hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
   
+- id: buflen
+  label: 'Buffer Size'
+  dtype: real
+  default: 4096
+  hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
+
 - id: in_clk
   label: 'Input clock'
   dtype: enum
@@ -233,6 +239,7 @@ templates:
              + ",fpga-reload=" + '${'$'}{fpga_reload}'
              + ",use_ref_clk=" + '${'$'}{use_ref_clk}'
              + ",ref_clk=" + str(int(${'$'}{ref_clk}))
+             + ",buflen=" + str(int(${'$'}{buflen}))
              + ",in_clk=" + '${'$'}{in_clk}'
              + ",out_clk=" + str(${'$'}{out_clk})
              + ",use_dac=" + '${'$'}{use_dac}'
