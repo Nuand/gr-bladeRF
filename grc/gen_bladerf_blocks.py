@@ -76,9 +76,9 @@ parameters:
   label: 'Sample Format'
   dtype: enum
   default: 16bit
-  options: ['16bit', '8bit']
-  option_labels: [16bit, 8bit]
   
+  options: ['16bit', '8bit', '16bit_packed']
+  option_labels: [16bit, 8bit, "16bit_packed"]
 - id: sample_rate
   label: 'Sample Rate (sps)'
   dtype: real

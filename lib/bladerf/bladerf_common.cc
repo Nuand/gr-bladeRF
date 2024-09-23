@@ -391,6 +391,9 @@ void bladerf_common::init(dict_t const &dict, bladerf_direction direction)
       _format = BLADERF_FORMAT_SC16_Q11;
       BLADERF_INFO("16bit mode enabled");
     }
+  } else if (dict.count("sample_format") && _get(dict, "sample_format") == "16bit_packed") {
+      _format = BLADERF_FORMAT_SC16_Q11_PACKED;
+      BLADERF_INFO("16bit packed mode enabled");
   } else if (dict.count("sample_format") && _get(dict, "sample_format") == "8bit") {
     if (dict.count("metadata") && _get(dict, "metadata") == "True") {
       _format = BLADERF_FORMAT_SC8_Q7_META;
