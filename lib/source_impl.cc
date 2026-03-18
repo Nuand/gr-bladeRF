@@ -136,7 +136,7 @@ namespace gr {
     double source_impl::get_freq_corr(size_t chan)
     {
         return chan < get_num_channels() ?
-                    device_->get_center_freq(chan) : 0;
+                    device_->get_freq_corr(chan) : 0;
     }
 
     std::vector<std::string> source_impl::get_gain_names(size_t chan)
