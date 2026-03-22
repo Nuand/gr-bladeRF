@@ -622,6 +622,7 @@ void bladerf_common::init_refclk(int freq)
     if (status != 0) {
       BLADERF_WARNING("bladerf_get_pll_refclk_range: "
                       << bladerf_strerror(status));
+      return;
     }
     if (freq < range->min || freq > range->max)
     {
