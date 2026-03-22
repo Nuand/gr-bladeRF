@@ -129,8 +129,8 @@ parameters:
 - id: out_clk
   label: 'Output clock'
   dtype: enum
-  default: False
-  options: [False, True]
+  default: 'False'
+  options: ['False', 'True']
   option_labels: ['Disable', 'Enable']
   
 - id: use_dac
