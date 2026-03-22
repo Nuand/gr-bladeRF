@@ -111,13 +111,13 @@ parameters:
   label: 'Buffer Size'
   dtype: real
   default: 4096
-  hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
+  hide: part
 
 - id: buffers
   label: 'Number of Buffers'
   dtype: real
   default: 512
-  hide: ${'$'}{ 'none' if use_ref_clk == 'True' else 'part'}
+  hide: part
 
 - id: in_clk
   label: 'Input clock'
