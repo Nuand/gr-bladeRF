@@ -3,4 +3,5 @@
 *.pyo
 *.user
 build*/
+obj-*-linux-gnu/
 examples/grc/*.py

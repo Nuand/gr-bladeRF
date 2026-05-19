@@ -1,0 +1,10 @@
+# dpkg-buildpackage / debhelper artifacts
+.debhelper/
+debhelper-build-stamp
+files
+*.substvars
+*.debhelper
+*.debhelper.log
+tmp/
+gr-bladerf/
+gr-bladerf-*/

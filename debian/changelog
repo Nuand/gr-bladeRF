@@ -1,0 +1,9 @@
+gr-bladerf (1.0.0) UNRELEASED; urgency=medium
+
+  * Initial Debian packaging using dpkg-buildpackage and dh + cmake.
+    Produces a single binary package gr-bladerf containing the
+    gnuradio-bladeRF shared library, PyBind11 Python bindings,
+    GRC YAML block descriptions, public headers and CMake config
+    files.
+
+ -- Oleksandr Suvorov <cryosay@gmail.com>  Mon, 18 May 2026 09:00:00 +0000
